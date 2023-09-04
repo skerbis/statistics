@@ -93,6 +93,7 @@ class chartData
      */
     private function getVisitsPerDay(): array
     {
+        $package = rex_addon::get('statistics');
         // DATA COLLECTION FOR MAIN CHART, "VIEWS PER DAY"
 
         // modify end date, because sql includes start and end, php ommits end
@@ -131,7 +132,7 @@ class chartData
 
         $data_chart_visits[] = [
             'data' => $values,
-            'name' => 'Aufrufe Gesamt',
+            'name' => $package->i18n('statistics_chart_visits_total'),
             'type' => 'line',
         ];
 
@@ -160,7 +161,7 @@ class chartData
                 $data_chart_visits[] = [
                     // 'x' => $labels,
                     'data' => $values,
-                    'name' => 'Aufrufe ' . $domain['domain'],
+                    'name' => $package->i18n('statistics_chart_visits') . ' ' . $domain['domain'],
                     'type' => 'line',
                 ];
             }
@@ -179,6 +180,7 @@ class chartData
      */
     private function getVisitorsPerDay(): array
     {
+        $package = rex_addon::get('statistics');
         // DATA COLLECTION FOR MAIN CHART, "VISITORS PER DAY"
 
         // modify end date, because sql includes start and end, php ommits end
@@ -219,7 +221,7 @@ class chartData
 
         $data_chart_visitors[] = [
             'data' => $values,
-            'name' => 'Besucher Gesamt',
+            'name' => $package->i18n('statistics_chart_visitors_total'),
             'type' => 'line',
         ];
 
@@ -244,7 +246,7 @@ class chartData
 
                 $data_chart_visitors[] = [
                     'data' => $values,
-                    'name' => 'Besucher ' . $domain['domain'],
+                    'name' => $package->i18n('statistics_chart_visitors') . ' ' . $domain['domain'],
                     'type' => 'line',
                 ];
             }
@@ -263,6 +265,7 @@ class chartData
      */
     public function getHeatmapVisits(): array
     {
+        $package = rex_addon::get('statistics');
         // data for heatmap chart
 
         $sql = rex_sql::factory();
@@ -313,6 +316,7 @@ class chartData
      */
     public function getChartDataMonthly(): array
     {
+        $package = rex_addon::get('statistics');
         $legend = [];
         $xaxis = [];
         $series = [];
@@ -358,7 +362,7 @@ class chartData
         // combine data to series array for chart
         $serie = [
             'data' => array_values($serie_data),
-            'name' => 'Aufrufe Gesamt',
+            'name' => $package->i18n('statistics_chart_visits_total'),
             'type' => 'line',
         ];
 
@@ -384,11 +388,11 @@ class chartData
 
                 $serie = [
                     'data' => array_values($serie_data),
-                    'name' => 'Aufrufe ' . $domain['domain'],
+                    'name' => $package->i18n('statistics_chart_visits') . ' ' . $domain['domain'],
                     'type' => 'line',
                 ];
 
-                $legend[] = 'Aufrufe ' . $domain['domain'];
+                $legend[] = $package->i18n('statistics_chart_visits') . ' ' . $domain['domain'];
 
                 $series[] = $serie;
             }
@@ -414,7 +418,7 @@ class chartData
         // combine data to series array for chart
         $serie = [
             'data' => array_values($serie_data),
-            'name' => 'Besucher Gesamt',
+            'name' => $package->i18n('statistics_chart_visitors_total'),
             'type' => 'line',
         ];
 
@@ -440,11 +444,11 @@ class chartData
 
                 $serie = [
                     'data' => array_values($serie_data),
-                    'name' => 'Besucher ' . $domain['domain'],
+                    'name' => $package->i18n('statistics_chart_visitors') . ' ' . $domain['domain'],
                     'type' => 'line',
                 ];
 
-                $legend[] = 'Besucher ' . $domain['domain'];
+                $legend[] = $package->i18n('statistics_chart_visitors') . ' ' . $domain['domain'];
 
                 $series[] = $serie;
             }
@@ -468,6 +472,7 @@ class chartData
      */
     public function getChartDataYearly(): array
     {
+        $package = rex_addon::get('statistics');
 
         $legend = [];
         $xaxis = [];
@@ -511,12 +516,12 @@ class chartData
         // combine data to series array for chart
         $serie = [
             'data' => array_values($serie_data),
-            'name' => 'Aufrufe Gesamt',
+            'name' => $package->i18n('statistics_chart_visits_total'),
             'type' => 'line',
         ];
 
         // append to legend
-        $legend[] = 'Aufrufe Gesamt';
+        $legend[] = $package->i18n('statistics_chart_visits_total');
 
         // add serie to series
         $series[] = $serie;
@@ -537,11 +542,11 @@ class chartData
 
                 $serie = [
                     'data' => array_values($serie_data),
-                    'name' => 'Aufrufe ' . $domain['domain'],
+                    'name' => $package->i18n('statistics_chart_visits') . ' ' . $domain['domain'],
                     'type' => 'line',
                 ];
 
-                $legend[] = 'Aufrufe ' . $domain['domain'];
+                $legend[] = $package->i18n('statistics_chart_visits') . ' ' . $domain['domain'];
 
                 $series[] = $serie;
             }
@@ -567,12 +572,12 @@ class chartData
         // combine data to series array for chart
         $serie = [
             'data' => array_values($serie_data),
-            'name' => 'Besucher Gesamt',
+            'name' => $package->i18n('statistics_chart_visitors_total'),
             'type' => 'line',
         ];
 
         // append to legend
-        $legend[] = 'Besucher Gesamt';
+        $legend[] = $package->i18n('statistics_chart_visitors_total');
 
         // add serie to series
         $series[] = $serie;
@@ -593,7 +598,7 @@ class chartData
 
                 $serie = [
                     'data' => array_values($serie_data),
-                    'name' => 'Besucher ' . $domain['domain'],
+                    'name' => $package->i18n('statistics_chart_visitors') . ' ' . $domain['domain'],
                     'type' => 'line',
                 ];
 
