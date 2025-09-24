@@ -260,8 +260,8 @@ function loadCharts() {
     container.style.display = 'block';
     container.innerHTML = '<p>Charts werden geladen...</p>';
 
-    // Load the full stats page content via AJAX
-    fetch('index.php?page=statistics/api&api=stats_load_full&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
+    // Load the full stats page content via AJAX (canonical Redaxo API)
+    fetch('index.php?rex-api-call=stats_load_full&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
         .then(response => response.json())
         .then(result => {
             if (result.ok) {
@@ -293,8 +293,8 @@ function loadDetail(type) {
     modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Lade Details...</p></div>');
     modal.modal('show');
 
-    // Load specific detail via AJAX
-    fetch('index.php?page=statistics/api&api=stats_detail&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
+    // Load specific detail via AJAX (canonical Redaxo API)
+    fetch('index.php?rex-api-call=stats_detail&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
         .then(response => response.json())
         .then(result => {
             if (result.ok) {

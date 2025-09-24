@@ -198,10 +198,12 @@ class rex_api_stats_load_full extends rex_api_function
 
         $html = $main_chart_html . $browser_html . $browsertype_html . $os_html . $brand_html . $model_html . $weekday_html . $hour_html . $pagecount_html . $visitduration_html . $lastpage_html . $country_html . $bots_html;
 
-        $show_toolbox = rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false';
+    $show_toolbox = rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false';
 
-        // Add JavaScript for charts
-        $html .= '<script>
+    $date_qs = '&date_start=' . urlencode($request_date_start) . '&date_end=' . urlencode($request_date_end);
+
+    // Add JavaScript for charts
+    $html .= '<script>
     if (rex.theme == "dark" || window.matchMedia(\'(prefers-color-scheme: dark)\').matches && rex.theme == "auto") {
         var theme = "dark";
     } else {
@@ -209,7 +211,7 @@ class rex_api_stats_load_full extends rex_api_function
     }
 
     async function loadChartData(type) {
-        const response = await fetch(\'index.php?page=statistics/api&api=stats_charts&type=\' + type + \'&date_start=' . urlencode($request_date_start) . '&date_end=' . urlencode($request_date_end) . '\');
+        const response = await fetch(\'index.php?rex-api-call=stats_charts&type=\' + type + \'" . $date_qs . "\');
         return await response.json();
     }
 

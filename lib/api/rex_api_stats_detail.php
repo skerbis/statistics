@@ -131,10 +131,12 @@ class rex_api_stats_detail extends rex_api_function
                 $html = '<p>Unbekannter Detail-Typ.</p>';
         }
 
-        // Add JavaScript for the specific chart
-        $show_toolbox = rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false';
+    // Add JavaScript for the specific chart
+    $show_toolbox = rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false';
 
-        $html .= '<script>
+    $date_qs = '&date_start=' . urlencode($request_date_start) . '&date_end=' . urlencode($request_date_end);
+
+    $html .= '<script>
     if (rex.theme == "dark" || window.matchMedia(\'(prefers-color-scheme: dark)\').matches && rex.theme == "auto") {
         var theme = "dark";
     } else {
@@ -142,7 +144,7 @@ class rex_api_stats_detail extends rex_api_function
     }
 
     async function loadDetailChartData(type) {
-        const response = await fetch(\'index.php?page=statistics/api&api=stats_charts&type=\' + type + \'&date_start=' . urlencode($request_date_start) . '&date_end=' . urlencode($request_date_end) . '\');
+        const response = await fetch(\'index.php?rex-api-call=stats_charts&type=\' + type + \'" . $date_qs . "\');
         return await response.json();
     }
 
