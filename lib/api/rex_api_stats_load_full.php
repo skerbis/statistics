@@ -22,7 +22,7 @@ use AndiLeni\Statistics\VisitDuration;
 class rex_api_stats_load_full extends rex_api_function
 {
 
-    protected $published = false;
+    protected $published = true;
 
     /**
      * Execute the API call
