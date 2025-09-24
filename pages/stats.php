@@ -269,8 +269,12 @@ function loadDetail(type) {
     modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Lade Details...</p></div>');
     modal.modal('show');
 
-    // Load specific detail via AJAX (try backend /redaxo first, then fallback)
-    const dateQs = '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>';
+    // Read date range from the visible inputs so the modal respects user selection
+    var startInput = document.getElementById('statistics_datefilter_start');
+    var endInput = document.getElementById('statistics_datefilter_end');
+    var startVal = (startInput && startInput.value) ? startInput.value : '<?= $filter_date_helper->date_start->format('Y-m-d') ?>';
+    var endVal = (endInput && endInput.value) ? endInput.value : '<?= $filter_date_helper->date_end->format('Y-m-d') ?>';
+    const dateQs = '&date_start=' + encodeURIComponent(startVal) + '&date_end=' + encodeURIComponent(endVal);
 
     loadFetch('/redaxo/index.php?rex-api-call=stats_detail&type=' + type + dateQs,
               '/index.php?rex-api-call=stats_detail&type=' + type + dateQs)
