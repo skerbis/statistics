@@ -26,69 +26,69 @@ $filter_fragment->setVar('wts', $filter_date_helper->whole_time_start->format("Y
 
 echo $filter_fragment->parse('filter.php');
 
-// Dashboard Layout with Bootstrap Cards
+// Dashboard Layout with Bootstrap 3 Panels
 echo '<div class="container-fluid">';
-echo '<div class="row mb-4">';
+echo '<div class="row" style="margin-bottom: 20px;">';
 
-// Key Metrics Cards with Icons
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card border-left-primary shadow h-100 py-2">';
-echo '<div class="card-body">';
-echo '<div class="row no-gutters align-items-center">';
-echo '<div class="col mr-2">';
-echo '<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Besuche Gesamt</div>';
-echo '<div class="h5 mb-0 font-weight-bold text-gray-800">' . number_format($overview_data['visits_total']) . '</div>';
+// Key Metrics Panels with Icons
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-primary" style="border-left: 4px solid #337ab7; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">';
+echo '<div class="panel-body">';
+echo '<div class="row">';
+echo '<div class="col-xs-8">';
+echo '<div class="text-muted" style="font-size: 11px; text-transform: uppercase; font-weight: bold;">Besuche Gesamt</div>';
+echo '<div class="h4" style="margin: 0; font-weight: bold;">' . number_format($overview_data['visits_total']) . '</div>';
 echo '</div>';
-echo '<div class="col-auto">';
-echo '<i class="fas fa-eye fa-2x text-gray-300"></i>';
-echo '</div>';
-echo '</div>';
-echo '</div>';
-echo '</div>';
-echo '</div>';
-
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card border-left-success shadow h-100 py-2">';
-echo '<div class="card-body">';
-echo '<div class="row no-gutters align-items-center">';
-echo '<div class="col mr-2">';
-echo '<div class="text-xs font-weight-bold text-success text-uppercase mb-1">Besucher Gesamt</div>';
-echo '<div class="h5 mb-0 font-weight-bold text-gray-800">' . number_format($overview_data['visitors_total']) . '</div>';
-echo '</div>';
-echo '<div class="col-auto">';
-echo '<i class="fas fa-users fa-2x text-gray-300"></i>';
+echo '<div class="col-xs-4 text-right">';
+echo '<i class="fa fa-eye fa-2x text-muted"></i>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card border-left-warning shadow h-100 py-2">';
-echo '<div class="card-body">';
-echo '<div class="row no-gutters align-items-center">';
-echo '<div class="col mr-2">';
-echo '<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Besuche Heute</div>';
-echo '<div class="h5 mb-0 font-weight-bold text-gray-800">' . number_format($overview_data['visits_today']) . '</div>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-success" style="border-left: 4px solid #5cb85c; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">';
+echo '<div class="panel-body">';
+echo '<div class="row">';
+echo '<div class="col-xs-8">';
+echo '<div class="text-muted" style="font-size: 11px; text-transform: uppercase; font-weight: bold;">Besucher Gesamt</div>';
+echo '<div class="h4" style="margin: 0; font-weight: bold;">' . number_format($overview_data['visitors_total']) . '</div>';
 echo '</div>';
-echo '<div class="col-auto">';
-echo '<i class="fas fa-calendar-day fa-2x text-gray-300"></i>';
+echo '<div class="col-xs-4 text-right">';
+echo '<i class="fa fa-users fa-2x text-muted"></i>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card border-left-info shadow h-100 py-2">';
-echo '<div class="card-body">';
-echo '<div class="row no-gutters align-items-center">';
-echo '<div class="col mr-2">';
-echo '<div class="text-xs font-weight-bold text-info text-uppercase mb-1">Besucher Heute</div>';
-echo '<div class="h5 mb-0 font-weight-bold text-gray-800">' . number_format($overview_data['visitors_today']) . '</div>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-warning" style="border-left: 4px solid #f0ad4e; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">';
+echo '<div class="panel-body">';
+echo '<div class="row">';
+echo '<div class="col-xs-8">';
+echo '<div class="text-muted" style="font-size: 11px; text-transform: uppercase; font-weight: bold;">Besuche Heute</div>';
+echo '<div class="h4" style="margin: 0; font-weight: bold;">' . number_format($overview_data['visits_today']) . '</div>';
 echo '</div>';
-echo '<div class="col-auto">';
-echo '<i class="fas fa-user-clock fa-2x text-gray-300"></i>';
+echo '<div class="col-xs-4 text-right">';
+echo '<i class="fa fa-calendar fa-2x text-muted"></i>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-info" style="border-left: 4px solid #5bc0de; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">';
+echo '<div class="panel-body">';
+echo '<div class="row">';
+echo '<div class="col-xs-8">';
+echo '<div class="text-muted" style="font-size: 11px; text-transform: uppercase; font-weight: bold;">Besucher Heute</div>';
+echo '<div class="h4" style="margin: 0; font-weight: bold;">' . number_format($overview_data['visitors_today']) . '</div>';
+echo '</div>';
+echo '<div class="col-xs-4 text-right">';
+echo '<i class="fa fa-clock-o fa-2x text-muted"></i>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
@@ -98,83 +98,79 @@ echo '</div>';
 echo '</div>'; // end row
 
 // Filtered Data
-echo '<div class="row mb-4">';
-echo '<div class="col-lg-6 mb-4">';
-echo '<div class="card shadow h-100">';
-echo '<div class="card-header py-3">';
-echo '<h6 class="m-0 font-weight-bold text-primary">Besuche im Zeitraum</h6>';
+echo '<div class="row" style="margin-bottom: 20px;">';
+echo '<div class="col-lg-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="box-shadow: 0 2px 4px rgba(0,0,0,0.1);">';
+echo '<div class="panel-heading">';
+echo '<h3 class="panel-title">Besuche im Zeitraum</h3>';
 echo '</div>';
-echo '<div class="card-body">';
-echo '<div class="text-center">';
-echo '<span class="h2 mb-0 font-weight-bold text-gray-800">' . number_format($overview_data['visits_datefilter']) . '</span>';
+echo '<div class="panel-body text-center">';
+echo '<span class="h2" style="margin: 0; font-weight: bold;">' . number_format($overview_data['visits_datefilter']) . '</span>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+
+echo '<div class="col-lg-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="box-shadow: 0 2px 4px rgba(0,0,0,0.1);">';
+echo '<div class="panel-heading">';
+echo '<h3 class="panel-title">Besucher im Zeitraum</h3>';
+echo '</div>';
+echo '<div class="panel-body text-center">';
+echo '<span class="h2" style="margin: 0; font-weight: bold;">' . number_format($overview_data['visitors_datefilter']) . '</span>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
-echo '<div class="col-lg-6 mb-4">';
-echo '<div class="card shadow h-100">';
-echo '<div class="card-header py-3">';
-echo '<h6 class="m-0 font-weight-bold text-success">Besucher im Zeitraum</h6>';
-echo '</div>';
-echo '<div class="card-body">';
-echo '<div class="text-center">';
-echo '<span class="h2 mb-0 font-weight-bold text-gray-800">' . number_format($overview_data['visitors_datefilter']) . '</span>';
-echo '</div>';
-echo '</div>';
-echo '</div>';
-echo '</div>';
-echo '</div>';
-
-// Detail Sections with Clickable Cards
+// Detail Sections with Clickable Panels
 echo '<div class="row">';
-echo '<div class="col-12">';
-echo '<h4 class="mb-4">Detaillierte Analysen</h4>';
+echo '<div class="col-xs-12">';
+echo '<h4 style="margin-bottom: 20px;">Detaillierte Analysen</h4>';
 echo '</div>';
 echo '</div>';
 
 echo '<div class="row">';
 
 // Device Types
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card shadow h-100" onclick="loadDetail(\'browsertype\')" style="cursor: pointer;">';
-echo '<div class="card-body text-center">';
-echo '<i class="fas fa-mobile-alt fa-3x text-primary mb-3"></i>';
-echo '<h5 class="card-title">Gerätetypen</h5>';
-echo '<p class="card-text text-muted">Smartphones, Tablets, Desktop</p>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onclick="loadDetail(\'browsertype\')">';
+echo '<div class="panel-body text-center">';
+echo '<i class="fa fa-mobile fa-3x text-primary" style="margin-bottom: 15px;"></i>';
+echo '<h5>Gerätetypen</h5>';
+echo '<p class="text-muted">Smartphones, Tablets, Desktop</p>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
 // Browsers
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card shadow h-100" onclick="loadDetail(\'browser\')" style="cursor: pointer;">';
-echo '<div class="card-body text-center">';
-echo '<i class="fas fa-globe fa-3x text-success mb-3"></i>';
-echo '<h5 class="card-title">Browser</h5>';
-echo '<p class="card-text text-muted">Chrome, Firefox, Safari, etc.</p>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onclick="loadDetail(\'browser\')">';
+echo '<div class="panel-body text-center">';
+echo '<i class="fa fa-globe fa-3x text-success" style="margin-bottom: 15px;"></i>';
+echo '<h5>Browser</h5>';
+echo '<p class="text-muted">Chrome, Firefox, Safari, etc.</p>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
 // Operating Systems
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card shadow h-100" onclick="loadDetail(\'os\')" style="cursor: pointer;">';
-echo '<div class="card-body text-center">';
-echo '<i class="fas fa-cogs fa-3x text-warning mb-3"></i>';
-echo '<h5 class="card-title">Betriebssysteme</h5>';
-echo '<p class="card-text text-muted">Windows, macOS, Linux, etc.</p>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onclick="loadDetail(\'os\')">';
+echo '<div class="panel-body text-center">';
+echo '<i class="fa fa-cogs fa-3x text-warning" style="margin-bottom: 15px;"></i>';
+echo '<h5>Betriebssysteme</h5>';
+echo '<p class="text-muted">Windows, macOS, Linux, etc.</p>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
 // Brands
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card shadow h-100" onclick="loadDetail(\'brand\')" style="cursor: pointer;">';
-echo '<div class="card-body text-center">';
-echo '<i class="fas fa-building fa-3x text-info mb-3"></i>';
-echo '<h5 class="card-title">Marken</h5>';
-echo '<p class="card-text text-muted">Apple, Samsung, Google, etc.</p>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onclick="loadDetail(\'brand\')">';
+echo '<div class="panel-body text-center">';
+echo '<i class="fa fa-building fa-3x text-info" style="margin-bottom: 15px;"></i>';
+echo '<h5>Marken</h5>';
+echo '<p class="text-muted">Apple, Samsung, Google, etc.</p>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
@@ -184,45 +180,45 @@ echo '</div>'; // end row
 echo '<div class="row">';
 
 // Time Analysis
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card shadow h-100" onclick="loadDetail(\'weekday\')" style="cursor: pointer;">';
-echo '<div class="card-body text-center">';
-echo '<i class="fas fa-calendar-week fa-3x text-secondary mb-3"></i>';
-echo '<h5 class="card-title">Wochentage</h5>';
-echo '<p class="card-text text-muted">Besuche nach Wochentagen</p>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onclick="loadDetail(\'weekday\')">';
+echo '<div class="panel-body text-center">';
+echo '<i class="fa fa-calendar fa-3x text-muted" style="margin-bottom: 15px;"></i>';
+echo '<h5>Wochentage</h5>';
+echo '<p class="text-muted">Besuche nach Wochentagen</p>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
 // Hours
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card shadow h-100" onclick="loadDetail(\'hour\')" style="cursor: pointer;">';
-echo '<div class="card-body text-center">';
-echo '<i class="fas fa-clock fa-3x text-dark mb-3"></i>';
-echo '<h5 class="card-title">Stunden</h5>';
-echo '<p class="card-text text-muted">Besuche nach Uhrzeit</p>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onclick="loadDetail(\'hour\')">';
+echo '<div class="panel-body text-center">';
+echo '<i class="fa fa-clock-o fa-3x text-muted" style="margin-bottom: 15px;"></i>';
+echo '<h5>Stunden</h5>';
+echo '<p class="text-muted">Besuche nach Uhrzeit</p>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
 // Countries
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card shadow h-100" onclick="loadDetail(\'country\')" style="cursor: pointer;">';
-echo '<div class="card-body text-center">';
-echo '<i class="fas fa-map-marker-alt fa-3x text-danger mb-3"></i>';
-echo '<h5 class="card-title">Länder</h5>';
-echo '<p class="card-text text-muted">Geografische Verteilung</p>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onclick="loadDetail(\'country\')">';
+echo '<div class="panel-body text-center">';
+echo '<i class="fa fa-map-marker fa-3x text-danger" style="margin-bottom: 15px;"></i>';
+echo '<h5>Länder</h5>';
+echo '<p class="text-muted">Geografische Verteilung</p>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
 
 // Visit Duration
-echo '<div class="col-lg-3 col-md-6 mb-4">';
-echo '<div class="card shadow h-100" onclick="loadDetail(\'visitduration\')" style="cursor: pointer;">';
-echo '<div class="card-body text-center">';
-echo '<i class="fas fa-stopwatch fa-3x text-primary mb-3"></i>';
-echo '<h5 class="card-title">Besuchsdauer</h5>';
-echo '<p class="card-text text-muted">Verweildauer auf der Seite</p>';
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 20px;">';
+echo '<div class="panel panel-default" style="cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onclick="loadDetail(\'visitduration\')">';
+echo '<div class="panel-body text-center">';
+echo '<i class="fa fa-clock-o fa-3x text-primary" style="margin-bottom: 15px;"></i>';
+echo '<h5>Besuchsdauer</h5>';
+echo '<p class="text-muted">Verweildauer auf der Seite</p>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
@@ -230,25 +226,25 @@ echo '</div>';
 echo '</div>'; // end row
 
 // Full Charts Button (Legacy)
-echo '<div class="row mb-4">';
-echo '<div class="col-12 text-center">';
-echo '<button class="btn btn-outline-primary btn-lg" onclick="loadCharts()">Alle detaillierten Charts laden</button>';
+echo '<div class="row" style="margin-bottom: 20px;">';
+echo '<div class="col-xs-12 text-center">';
+echo '<button class="btn btn-default btn-lg" onclick="loadCharts()">Alle detaillierten Charts laden</button>';
 echo '<div id="charts-container" style="display:none; margin-top: 20px;"></div>';
 echo '</div>';
 echo '</div>';
 
 // Detail Modal
 echo '<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">';
-echo '<div class="modal-dialog modal-xl" role="document">';
+echo '<div class="modal-dialog modal-lg" role="document">';
 echo '<div class="modal-content">';
 echo '<div class="modal-header">';
-echo '<h5 class="modal-title" id="detailModalLabel">Detailansicht</h5>';
 echo '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
 echo '<span aria-hidden="true">&times;</span>';
 echo '</button>';
+echo '<h4 class="modal-title" id="detailModalLabel">Detailansicht</h4>';
 echo '</div>';
 echo '<div class="modal-body" id="detailModalBody">';
-echo '<div class="text-center"><i class="fas fa-spinner fa-spin fa-3x"></i><p>Lade Details...</p></div>';
+echo '<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Lade Details...</p></div>';
 echo '</div>';
 echo '</div>';
 echo '</div>';
@@ -294,7 +290,7 @@ function loadDetail(type) {
     };
 
     $('#detailModalLabel').text(titles[type] || 'Detailansicht');
-    modalBody.html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-3x"></i><p>Lade Details...</p></div>');
+    modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Lade Details...</p></div>');
     modal.modal('show');
 
     // Load specific detail via AJAX
