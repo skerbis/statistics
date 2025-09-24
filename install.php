@@ -145,9 +145,16 @@ rex_sql_table::get(rex::getTable('pagestats_pages_total'))
     ->ensureColumn(new rex_sql_column('total_count', 'int'))
     ->ensureColumn(new rex_sql_column('last_updated', 'datetime'))
     ->setPrimaryKey(['id'])
-    ->ensureIndex(new rex_sql_index('url_unique', ['url(255)'], rex_sql_index::UNIQUE))
     ->ensureIndex(new rex_sql_index('total_count', ['total_count']))
     ->ensure();
+
+// Add unique index on url prefix manually
+$sql = rex_sql::factory();
+try {
+    $sql->setQuery("ALTER TABLE " . rex::getTable('pagestats_pages_total') . " ADD UNIQUE INDEX idx_url_unique (url(255))");
+} catch (rex_sql_exception $e) {
+    // Index might already exist, ignore
+}
 
 // ip 2 geo database installation
 $today = new DateTimeImmutable();
