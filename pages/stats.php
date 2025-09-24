@@ -374,9 +374,7 @@ function initDetailCharts(type, dateQs) {
                 }).catch(()=>{});
                 break;
             case 'weekday':
-            case 'hour':
-            case 'country':
-            case 'visitduration':
+                // weekday remains a bar chart (labels/values)
                 loadDetailChartData(type, dateQs).then(data => {
                     const el = document.getElementById('chart_' + type + '_detail');
                     if (!el) return;
@@ -390,6 +388,7 @@ function initDetailCharts(type, dateQs) {
                     });
                 }).catch(()=>{});
                 break;
+            // hour, country, visitduration intentionally show only a table — no charts requested
         }
     } catch (e) {
         /* ignore chart init errors */

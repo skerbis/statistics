@@ -92,6 +92,26 @@ class rex_api_stats_detail extends rex_api_function
                 $html = $fragment_weekday->parse('data_vertical.php');
                 break;
 
+            case 'hour':
+                $hour = new Hour();
+
+                $fragment_hour = new rex_fragment();
+                $fragment_hour->setVar('title', $addon->i18n('statistics_hours'));
+                $fragment_hour->setVar('chart', '', false);
+                $fragment_hour->setVar('table', $hour->getList(), false);
+                $html = $fragment_hour->parse('data_vertical.php');
+                break;
+
+            case 'country':
+                $country = new Country();
+
+                $fragment_country = new rex_fragment();
+                $fragment_country->setVar('title', $addon->i18n('statistics_country'));
+                $fragment_country->setVar('chart', '', false);
+                $fragment_country->setVar('table', $country->getList(), false);
+                $html = $fragment_country->parse('data_vertical.php');
+                break;
+
             case 'visitduration':
                 $visitduration = new VisitDuration();
                 $visitduration_data = $visitduration->getChartData();
