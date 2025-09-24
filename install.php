@@ -140,7 +140,7 @@ rex_sql_table::get(rex::getTable('pagestats_yearly_visitors'))
 
 // Precomputed page totals
 rex_sql_table::get(rex::getTable('pagestats_pages_total'))
-    ->ensureColumn(new rex_sql_column('id', 'int', false, true))
+    ->ensureColumn(new rex_sql_column('id', 'int', null, true))
     ->ensureColumn(new rex_sql_column('url', 'varchar(2048)'))
     ->ensureColumn(new rex_sql_column('total_count', 'int'))
     ->ensureColumn(new rex_sql_column('last_updated', 'datetime'))
