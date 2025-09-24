@@ -96,6 +96,61 @@ echo '</div>';
 echo '</div>';
 
 echo '</div>'; // end row
+// Additional KPI row: this week metrics (last 7 days)
+$week_start = (new DateTime())->modify('-7 day')->format('Y-m-d');
+$week_end = (new DateTime())->format('Y-m-d');
+
+$sql = rex_sql::factory();
+$visits_this_week = $sql->getArray('SELECT IFNULL(SUM(count),0) as c FROM ' . rex::getTable('pagestats_visits_per_day') . ' WHERE date BETWEEN :start AND :end', ['start' => $week_start, 'end' => $week_end]);
+$visits_this_week = $visits_this_week[0]['c'] ?? 0;
+
+$visitors_this_week = $sql->getArray('SELECT IFNULL(SUM(count),0) as c FROM ' . rex::getTable('pagestats_visitors_per_day') . ' WHERE date BETWEEN :start AND :end', ['start' => $week_start, 'end' => $week_end]);
+$visitors_this_week = $visitors_this_week[0]['c'] ?? 0;
+
+// Most viewed article this week (exclude root '/'), match path part
+$top_article = $sql->getArray('SELECT SUBSTRING(url, LOCATE("/", url)) as path, SUM(count) as c FROM ' . rex::getTable('pagestats_visits_per_url') . ' WHERE date BETWEEN :start AND :end AND SUBSTRING(url, LOCATE("/", url)) != "/" GROUP BY path ORDER BY c DESC LIMIT 1', ['start' => $week_start, 'end' => $week_end]);
+$top_article_path = $top_article[0]['path'] ?? '-';
+$top_article_hits = $top_article[0]['c'] ?? 0;
+
+// pageviews per visitor this week (guard divide by zero)
+$pv_per_visitor = $visitors_this_week > 0 ? round($visits_this_week / $visitors_this_week, 2) : 0;
+
+echo '<div class="row" style="margin-bottom:20px;">';
+
+// Visits this week
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 10px;">';
+echo '<div class="panel panel-primary" style="border-left: 4px solid #2e6da4;">';
+echo '<div class="panel-body text-center">';
+echo '<div class="text-muted" style="font-size:11px; text-transform:uppercase; font-weight:bold;">Besuche diese Woche</div>';
+echo '<div class="h4" style="margin:0; font-weight:bold;">' . number_format($visits_this_week) . '</div>';
+echo '</div></div></div>';
+
+// Visitors this week
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 10px;">';
+echo '<div class="panel panel-success" style="border-left: 4px solid #3c763d;">';
+echo '<div class="panel-body text-center">';
+echo '<div class="text-muted" style="font-size:11px; text-transform:uppercase; font-weight:bold;">Besucher diese Woche</div>';
+echo '<div class="h4" style="margin:0; font-weight:bold;">' . number_format($visitors_this_week) . '</div>';
+echo '</div></div></div>';
+
+// Top article this week
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 10px;">';
+echo '<div class="panel panel-info" style="border-left: 4px solid #31708f;">';
+echo '<div class="panel-body text-center">';
+echo '<div class="text-muted" style="font-size:11px; text-transform:uppercase; font-weight:bold;">Meist aufgerufener Artikel (Woche)</div>';
+echo '<div class="h5" style="margin:0; font-weight:bold;">' . htmlspecialchars($top_article_path) . '</div>';
+echo '<div class="text-muted" style="font-size:12px;">' . number_format($top_article_hits) . ' Aufrufe</div>';
+echo '</div></div></div>';
+
+// Pageviews per visitor this week
+echo '<div class="col-lg-3 col-md-6" style="margin-bottom: 10px;">';
+echo '<div class="panel panel-warning" style="border-left: 4px solid #8a6d3b;">';
+echo '<div class="panel-body text-center">';
+echo '<div class="text-muted" style="font-size:11px; text-transform:uppercase; font-weight:bold;">Seiten/Sitzung (Woche)</div>';
+echo '<div class="h4" style="margin:0; font-weight:bold;">' . $pv_per_visitor . '</div>';
+echo '</div></div></div>';
+
+echo '</div>'; // end week KPI row
 
 // Filtered Data
 echo '<div class="row" style="margin-bottom: 20px;">';

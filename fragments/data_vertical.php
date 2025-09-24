@@ -13,12 +13,24 @@
             </header>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-sm-12 col-lg-6">
-                        <?php echo $this->chart; ?>
-                    </div>
-                    <div class="col-sm-12 col-lg-6">
-                        <?php echo $this->table; ?>
-                    </div>
+                    <?php if (trim($this->chart) !== '') : ?>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="chart-container" style="min-height:220px;">
+                                <?php echo $this->chart; ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="table-responsive">
+                                <?php echo $this->table; ?>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <?php echo $this->table; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
