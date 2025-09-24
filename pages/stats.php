@@ -270,19 +270,58 @@ function loadDetail(type) {
     modal.modal('show');
 
     // Load specific detail via AJAX (try backend /redaxo first, then fallback)
-    loadFetch('/redaxo/index.php?rex-api-call=stats_detail&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>',
-              '/index.php?rex-api-call=stats_detail&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
+    const dateQs = '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>';
+
+    loadFetch('/redaxo/index.php?rex-api-call=stats_detail&type=' + type + dateQs,
+              '/index.php?rex-api-call=stats_detail&type=' + type + dateQs)
         .then(async response => {
-            const ct = response.headers.get('content-type') || '';
-            if (ct.indexOf('application/json') !== -1) {
-                return response.json();
-            }
+            const ct = (response.headers.get('content-type') || '').toLowerCase();
             const text = await response.text();
+
+            if (ct.indexOf('application/json') !== -1) {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    return { ok: false, debugText: text };
+                }
+            }
+
+            // If the response is HTML, treat it as a successful fragment
+            if (ct.indexOf('text/html') !== -1) {
+                return { ok: true, html: text };
+            }
+
+            // Fallback: treat everything else as debug text
             return { ok: false, debugText: text };
         })
         .then(result => {
             if (result && result.ok) {
-                modalBody.html(result.data || result.msg || '');
+                if (result.html) {
+                    modalBody.html(result.html);
+                    // initialize charts inside the loaded fragment
+                    initDetailCharts(type, dateQs);
+
+                    // Execute any inline or external scripts from the loaded fragment
+                    modalBody.find('script').each(function() {
+                        var s = document.createElement('script');
+                        if (this.src) {
+                            s.src = this.src;
+                            s.async = false;
+                            document.head.appendChild(s);
+                        } else {
+                            try {
+                                s.text = this.innerHTML;
+                                document.head.appendChild(s);
+                                document.head.removeChild(s);
+                            } catch (e) {
+                                // fallback: evaluate
+                                try { window.eval(this.innerHTML); } catch (ee) { /* ignore */ }
+                            }
+                        }
+                    });
+                } else {
+                    modalBody.html(result.data || result.msg || '');
+                }
             } else if (result && result.debugText) {
                 modalBody.html('<pre style="white-space:pre-wrap;">' + escapeHtml(result.debugText) + '</pre>');
             } else {
@@ -301,6 +340,55 @@ function loadDetail(type) {
             .replace(/>/g, "&gt;")
             .replace(/\"/g, "&quot;")
             .replace(/'/g, "&#039;");
+    }
+}
+
+// client-side helper to fetch chart data for details
+async function loadDetailChartData(type, dateQs) {
+    const response = await fetch('/redaxo/index.php?rex-api-call=stats_charts&type=' + encodeURIComponent(type) + (dateQs || ''), { credentials: 'same-origin' });
+    if (!response.ok) throw new Error('Chart data fetch failed');
+    return response.json();
+}
+
+// initialize charts for the given detail type
+function initDetailCharts(type, dateQs) {
+    try {
+        switch(type) {
+            case 'browser':
+            case 'browsertype':
+            case 'os':
+            case 'brand':
+                loadDetailChartData(type, dateQs).then(data => {
+                    const el = document.getElementById('chart_' + type + '_detail');
+                    if (!el) return;
+                    const theme = (typeof rex !== 'undefined' && (rex.theme == 'dark' || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && rex.theme == 'auto'))) ? 'dark' : 'shine';
+                    const chart = echarts.init(el, theme);
+                    chart.setOption({
+                        tooltip: { trigger: 'item', formatter: '{b}: <b>{c}</b> ({d}%)' },
+                        series: [{ type: 'pie', radius: '85%', data: data }]
+                    });
+                }).catch(()=>{});
+                break;
+            case 'weekday':
+            case 'hour':
+            case 'country':
+            case 'visitduration':
+                loadDetailChartData(type, dateQs).then(data => {
+                    const el = document.getElementById('chart_' + type + '_detail');
+                    if (!el) return;
+                    const theme = (typeof rex !== 'undefined' && (rex.theme == 'dark' || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && rex.theme == 'auto'))) ? 'dark' : 'shine';
+                    const chart = echarts.init(el, theme);
+                    chart.setOption({
+                        tooltip: { trigger: 'axis' },
+                        xAxis: { type: 'category', data: data.labels || [] },
+                        yAxis: { type: 'value' },
+                        series: [{ type: 'bar', data: data.values || data }]
+                    });
+                }).catch(()=>{});
+                break;
+        }
+    } catch (e) {
+        /* ignore chart init errors */
     }
 }
 </script>
