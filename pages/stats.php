@@ -49,7 +49,7 @@ $chart_data_yearly = $chart_data->getChartDataYearly();
 
 
 
-// device specific data
+// device specific data - lazy loaded
 $browser = new Browser();
 $browser_data = $browser->getData();
 
@@ -82,6 +82,7 @@ $lastpage_data = $lastpage->getChartData();
 
 $country = new Country();
 $country_data = $country->getChartData();
+
 
 
 // overview of visits and visitors of today, total and filered by date
@@ -141,7 +142,7 @@ echo $fragment_main_chart->parse('main_chart.php');
 $fragment = new rex_fragment();
 $fragment->setVar('title', $addon->i18n('statistics_browser'));
 $fragment->setVar('chart', '<div id="chart_browser" style="width: 100%;height:500px"></div>', false);
-$fragment->setVar('table', $browser->getList(), false);
+$fragment->setVar('table', '<div id="browser_table">Lade...</div>', false);
 echo $fragment->parse('data_vertical.php');
 
 $fragment = new rex_fragment();
@@ -486,616 +487,647 @@ echo $fragment->parse('core/page/section.php');
 
 
     var chart_browser = echarts.init(document.getElementById('chart_browser'), theme);
-    var chart_browser_option = {
-        title: {},
-        tooltip: {
-            trigger: 'item',
-            formatter: "{b}: <b>{c}</b> ({d}%)"
-        },
-        legend: {
-            show: false,
-            orient: 'vertical',
-            left: 'left',
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataView: {
-                    readOnly: false
-                },
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'pie',
-            radius: '85%',
-            data: <?php echo json_encode($browser_data) ?>,
-            labelLine: {
-                show: false
+    // Lazy load browser data
+    loadChartData('browser').then(data => {
+        var chart_browser_option = {
+            title: {},
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b}: <b>{c}</b> ({d}%)"
             },
-            label: {
-                show: true,
-                position: 'inside',
-                formatter: '{b}: {c} \n ({d}%)',
+            legend: {
+                show: false,
+                orient: 'vertical',
+                left: 'left',
             },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataView: {
+                        readOnly: false
+                    },
+                    saveAsImage: {}
                 }
-            }
-        }]
-    };
-    chart_browser.setOption(chart_browser_option);
+            },
+            series: [{
+                type: 'pie',
+                radius: '85%',
+                data: data,
+                labelLine: {
+                    show: false
+                },
+                label: {
+                    show: true,
+                    position: 'inside',
+                    formatter: '{b}: {c} \n ({d}%)',
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_browser.setOption(chart_browser_option);
+    });
 
 
 
     var chart_browsertype = echarts.init(document.getElementById('chart_browsertype'), theme);
-    var chart_browsertype_option = {
-        title: {},
-        tooltip: {
-            trigger: 'item',
-            formatter: "{b}: <b>{c}</b> ({d}%)"
-        },
-        legend: {
-            show: false,
-            orient: 'vertical',
-            left: 'left',
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataView: {
-                    readOnly: false
-                },
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'pie',
-            radius: '85%',
-            data: <?php echo json_encode($browsertype_data) ?>,
-            labelLine: {
-                show: false
+    // Lazy load browsertype data
+    loadChartData('browsertype').then(data => {
+        var chart_browsertype_option = {
+            title: {},
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b}: <b>{c}</b> ({d}%)"
             },
-            label: {
-                show: true,
-                position: 'inside',
-                formatter: '{b}: {c} \n ({d}%)',
+            legend: {
+                show: false,
+                orient: 'vertical',
+                left: 'left',
             },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataView: {
+                        readOnly: false
+                    },
+                    saveAsImage: {}
                 }
-            }
-        }]
-    };
-    chart_browsertype.setOption(chart_browsertype_option);
+            },
+            series: [{
+                type: 'pie',
+                radius: '85%',
+                data: data,
+                labelLine: {
+                    show: false
+                },
+                label: {
+                    show: true,
+                    position: 'inside',
+                    formatter: '{b}: {c} \n ({d}%)',
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_browsertype.setOption(chart_browsertype_option);
+    });
 
 
 
     var chart_os = echarts.init(document.getElementById('chart_os'), theme);
-    var chart_os_option = {
-        title: {},
-        tooltip: {
-            trigger: 'item',
-            formatter: "{b}: <b>{c}</b> ({d}%)"
-        },
-        legend: {
-            show: false,
-            orient: 'vertical',
-            left: 'left',
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataView: {
-                    readOnly: false
-                },
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'pie',
-            radius: '85%',
-            data: <?php echo json_encode($os_data) ?>,
-            labelLine: {
-                show: false
+    // Lazy load os data
+    loadChartData('os').then(data => {
+        var chart_os_option = {
+            title: {},
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b}: <b>{c}</b> ({d}%)"
             },
-            label: {
-                show: true,
-                position: 'inside',
-                formatter: '{b}: {c} \n ({d}%)',
+            legend: {
+                show: false,
+                orient: 'vertical',
+                left: 'left',
             },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataView: {
+                        readOnly: false
+                    },
+                    saveAsImage: {}
                 }
-            }
-        }]
-    };
-    chart_os.setOption(chart_os_option);
+            },
+            series: [{
+                type: 'pie',
+                radius: '85%',
+                data: data,
+                labelLine: {
+                    show: false
+                },
+                label: {
+                    show: true,
+                    position: 'inside',
+                    formatter: '{b}: {c} \n ({d}%)',
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_os.setOption(chart_os_option);
+    });
 
 
 
     var chart_brand = echarts.init(document.getElementById('chart_brand'), theme);
-    var chart_brand_option = {
-        title: {},
-        tooltip: {
-            trigger: 'item',
-            formatter: "{b}: <b>{c}</b> ({d}%)"
-        },
-        legend: {
-            show: false,
-            orient: 'vertical',
-            left: 'left',
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataView: {
-                    readOnly: false
-                },
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'pie',
-            radius: '85%',
-            data: <?php echo json_encode($brand_data) ?>,
-            labelLine: {
-                show: false
+    // Lazy load brand data
+    loadChartData('brand').then(data => {
+        var chart_brand_option = {
+            title: {},
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b}: <b>{c}</b> ({d}%)"
             },
-            label: {
-                show: true,
-                position: 'inside',
-                formatter: '{b}: {c} \n ({d}%)',
+            legend: {
+                show: false,
+                orient: 'vertical',
+                left: 'left',
             },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataView: {
+                        readOnly: false
+                    },
+                    saveAsImage: {}
                 }
-            }
-        }]
-    };
-    chart_brand.setOption(chart_brand_option);
+            },
+            series: [{
+                type: 'pie',
+                radius: '85%',
+                data: data,
+                labelLine: {
+                    show: false
+                },
+                label: {
+                    show: true,
+                    position: 'inside',
+                    formatter: '{b}: {c} \n ({d}%)',
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_brand.setOption(chart_brand_option);
+    });
 
 
 
     var chart_model = echarts.init(document.getElementById('chart_model'), theme);
-    var chart_model_option = {
-        title: {},
-        tooltip: {
-            trigger: 'item',
-            formatter: "{b}: <b>{c}</b> ({d}%)"
-        },
-        legend: {
-            show: false,
-            orient: 'vertical',
-            left: 'left',
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataView: {
-                    readOnly: false
+    // Lazy load model data
+    loadChartData('model').then(data => {
+        var chart_model_option = {
+            title: {},
+            tooltip: {
+                trigger: 'item',
+                formatter: "{b}: <b>{c}</b> ({d}%)"
+            },
+            legend: {
+                show: false,
+                orient: 'vertical',
+                left: 'left',
+            },
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataView: {
+                        readOnly: false
+                    },
+                    saveAsImage: {}
+                }
+            },
+            series: [{
+                type: 'pie',
+                radius: '85%',
+                data: data,
+                labelLine: {
+                    show: false
                 },
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'pie',
-            radius: '85%',
-            data: <?php echo json_encode($model_data) ?>,
-            labelLine: {
-                show: false
-            },
-            label: {
-                show: true,
-                position: 'inside',
-                formatter: '{b}: {c} \n ({d}%)',
-            },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                label: {
+                    show: true,
+                    position: 'inside',
+                    formatter: '{b}: {c} \n ({d}%)',
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
                 }
             }
-        }]
-    };
-    chart_model.setOption(chart_model_option);
+        }];
+        chart_model.setOption(chart_model_option);
+    });
 
 
 
     var chart_weekday = echarts.init(document.getElementById('chart_weekday'), theme);
-    var chart_weekday_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-            formatter: "{b}: <b>{c}</b>",
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        grid: {
-            containLabel: true,
-            left: '3%',
-            right: '3%',
-            bottom: '3%',
-        },
-        xAxis: [{
-            type: 'category',
-            data: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
-            axisTick: {
-                alignWithLabel: true
-            }
-        }],
-        yAxis: [{
-            type: 'value'
-        }],
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar"]
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'bar',
-            data: <?php echo json_encode($weekday_data) ?>,
-            label: {
-                show: false,
-            },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+    // Lazy load weekday data
+    loadChartData('weekday').then(data => {
+        var chart_weekday_option = {
+            title: {},
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{b}: <b>{c}</b>",
+                axisPointer: {
+                    type: 'shadow'
                 }
-            }
-        }]
-    };
-    chart_weekday.setOption(chart_weekday_option);
+            },
+            grid: {
+                containLabel: true,
+                left: '3%',
+                right: '3%',
+                bottom: '3%',
+            },
+            xAxis: [{
+                type: 'category',
+                data: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: "none"
+                    },
+                    dataView: {
+                        readOnly: false
+                    },
+                    magicType: {
+                        type: ["line", "bar"]
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            series: [{
+                type: 'bar',
+                data: data,
+                label: {
+                    show: false,
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_weekday.setOption(chart_weekday_option);
+    });
 
 
 
     var chart_hour = echarts.init(document.getElementById('chart_hour'), theme);
-    var chart_hour_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-            formatter: "{b} Uhr: <b>{c}</b>",
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        grid: {
-            containLabel: true,
-            left: '3%',
-            right: '3%',
-            bottom: '3%',
-        },
-        xAxis: [{
-            type: 'category',
-            data: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'],
-            axisTick: {
-                alignWithLabel: true
-            }
-        }],
-        yAxis: [{
-            type: 'value'
-        }],
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar"]
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'bar',
-            data: <?php echo json_encode($hour_data) ?>,
-            label: {
-                show: false,
-            },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+    // Lazy load hour data
+    loadChartData('hour').then(data => {
+        var chart_hour_option = {
+            title: {},
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{b} Uhr: <b>{c}</b>",
+                axisPointer: {
+                    type: 'shadow'
                 }
-            }
-        }]
-    };
-    chart_hour.setOption(chart_hour_option);
+            },
+            grid: {
+                containLabel: true,
+                left: '3%',
+                right: '3%',
+                bottom: '3%',
+            },
+            xAxis: [{
+                type: 'category',
+                data: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'],
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: "none"
+                    },
+                    dataView: {
+                        readOnly: false
+                    },
+                    magicType: {
+                        type: ["line", "bar"]
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            series: [{
+                type: 'bar',
+                data: data,
+                label: {
+                    show: false,
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_hour.setOption(chart_hour_option);
+    });
 
 
     var chart_pagecount = echarts.init(document.getElementById('chart_pagecount'), theme);
-    var chart_pagecount_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-            formatter: "{b} Seiten besucht: <b>{c} mal</b>",
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        grid: {
-            containLabel: true,
-            left: '3%',
-            right: '3%',
-            bottom: '3%',
-        },
-        xAxis: [{
-            type: 'category',
-            data: <?= json_encode($pagecount_data['values']) ?>,
-            axisTick: {
-                alignWithLabel: true
-            }
-        }],
-        yAxis: [{
-            type: 'value'
-        }],
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar"]
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'bar',
-            data: <?php echo json_encode($pagecount_data['labels']) ?>,
-            label: {
-                show: false,
-            },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+    // Lazy load pagecount data
+    loadChartData('pagecount').then(data => {
+        var chart_pagecount_option = {
+            title: {},
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{b} Seiten besucht: <b>{c} mal</b>",
+                axisPointer: {
+                    type: 'shadow'
                 }
-            }
-        }]
-    };
-    chart_pagecount.setOption(chart_pagecount_option);
+            },
+            grid: {
+                containLabel: true,
+                left: '3%',
+                right: '3%',
+                bottom: '3%',
+            },
+            xAxis: [{
+                type: 'category',
+                data: data.values,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: "none"
+                    },
+                    dataView: {
+                        readOnly: false
+                    },
+                    magicType: {
+                        type: ["line", "bar"]
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            series: [{
+                type: 'bar',
+                data: data.labels,
+                label: {
+                    show: false,
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_pagecount.setOption(chart_pagecount_option);
+    });
 
 
     var chart_visitduration = echarts.init(document.getElementById('chart_visitduration'), theme);
-    var chart_visitduration_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-            formatter: "{b} <br> <b>{c} mal</b>",
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        grid: {
-            containLabel: true,
-            left: '3%',
-            right: '3%',
-            bottom: '3%',
-        },
-        xAxis: [{
-            type: 'category',
-            data: <?= json_encode($visitduration_data['values']) ?>,
-            axisTick: {
-                alignWithLabel: true
-            }
-        }],
-        yAxis: [{
-            type: 'value'
-        }],
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar"]
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'bar',
-            data: <?php echo json_encode($visitduration_data['labels']) ?>,
-            label: {
-                show: false,
+    // Lazy load visitduration data
+    loadChartData('visitduration').then(data => {
+        var chart_visitduration_option = {
+            title: {},
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{b} <br> <b>{c} mal</b>",
+                axisPointer: {
+                    type: 'shadow'
+                }
             },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+            grid: {
+                containLabel: true,
+                left: '3%',
+                right: '3%',
+                bottom: '3%',
+            },
+            xAxis: [{
+                type: 'category',
+                data: data.values,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: "none"
+                    },
+                    dataView: {
+                        readOnly: false
+                    },
+                    magicType: {
+                        type: ["line", "bar"]
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            series: [{
+                type: 'bar',
+                data: data.labels,
+                label: {
+                    show: false,
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
                 }
             }
-        }]
-    };
-    chart_visitduration.setOption(chart_visitduration_option);
+        }];
+        chart_visitduration.setOption(chart_visitduration_option);
+    });
 
 
     var chart_lastpage = echarts.init(document.getElementById('chart_lastpage'), theme);
-    var chart_lastpage_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-            formatter: "{b} <br> Anzahl: <b>{c}</b>",
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        grid: {
-            containLabel: true,
-            left: '3%',
-            right: '3%',
-            bottom: '3%',
-        },
-        xAxis: [{
-            type: 'category',
-            data: <?= json_encode($lastpage_data['labels']) ?>,
-            axisTick: {
-                alignWithLabel: true
-            }
-        }],
-        yAxis: [{
-            type: 'value'
-        }],
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar"]
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'bar',
-            data: <?php echo json_encode($lastpage_data['values']) ?>,
-            label: {
-                show: false,
-            },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+    // Lazy load lastpage data
+    loadChartData('lastpage').then(data => {
+        var chart_lastpage_option = {
+            title: {},
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{b} <br> Anzahl: <b>{c}</b>",
+                axisPointer: {
+                    type: 'shadow'
                 }
-            }
-        }]
-    };
-    chart_lastpage.setOption(chart_lastpage_option);
+            },
+            grid: {
+                containLabel: true,
+                left: '3%',
+                right: '3%',
+                bottom: '3%',
+            },
+            xAxis: [{
+                type: 'category',
+                data: data.labels,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: "none"
+                    },
+                    dataView: {
+                        readOnly: false
+                    },
+                    magicType: {
+                        type: ["line", "bar"]
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            series: [{
+                type: 'bar',
+                data: data.values,
+                label: {
+                    show: false,
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_lastpage.setOption(chart_lastpage_option);
+    });
 
 
     var chart_country = echarts.init(document.getElementById('chart_country'), theme);
-    var chart_country_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-            formatter: "{b} <br> Anzahl: <b>{c}</b>",
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        grid: {
-            containLabel: true,
-            left: '3%',
-            right: '3%',
-            bottom: '3%',
-        },
-        xAxis: [{
-            type: 'category',
-            data: <?= json_encode($country_data['labels']) ?>,
-            axisTick: {
-                alignWithLabel: true
-            }
-        }],
-        yAxis: [{
-            type: 'value'
-        }],
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar"]
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            type: 'bar',
-            data: <?php echo json_encode($country_data['values']) ?>,
-            label: {
-                show: false,
-            },
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+    // Lazy load country data
+    loadChartData('country').then(data => {
+        var chart_country_option = {
+            title: {},
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{b} <br> Anzahl: <b>{c}</b>",
+                axisPointer: {
+                    type: 'shadow'
                 }
-            }
-        }]
-    };
-    chart_country.setOption(chart_country_option);
+            },
+            grid: {
+                containLabel: true,
+                left: '3%',
+                right: '3%',
+                bottom: '3%',
+            },
+            xAxis: [{
+                type: 'category',
+                data: data.labels,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: "none"
+                    },
+                    dataView: {
+                        readOnly: false
+                    },
+                    magicType: {
+                        type: ["line", "bar"]
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            series: [{
+                type: 'bar',
+                data: data.values,
+                label: {
+                    show: false,
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+        chart_country.setOption(chart_country_option);
+    });
 
 
     // resize visits chart when tabs change

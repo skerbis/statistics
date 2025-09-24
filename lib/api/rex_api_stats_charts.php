@@ -47,6 +47,50 @@ class rex_api_stats_charts extends rex_api_function
             case 'heatmap':
                 $data = $chart_data->getHeatmapVisits();
                 break;
+            case 'browser':
+                $browser = new \AndiLeni\Statistics\Browser();
+                $data = $browser->getData();
+                break;
+            case 'browsertype':
+                $browsertype = new \AndiLeni\Statistics\Browsertype();
+                $data = $browsertype->getData();
+                break;
+            case 'os':
+                $os = new \AndiLeni\Statistics\OS();
+                $data = $os->getData();
+                break;
+            case 'brand':
+                $brand = new \AndiLeni\Statistics\Brand();
+                $data = $brand->getData();
+                break;
+            case 'model':
+                $model = new \AndiLeni\Statistics\Model();
+                $data = $model->getData();
+                break;
+            case 'weekday':
+                $weekday = new \AndiLeni\Statistics\Weekday();
+                $data = $weekday->getData();
+                break;
+            case 'hour':
+                $hour = new \AndiLeni\Statistics\Hour();
+                $data = $hour->getData();
+                break;
+            case 'pagecount':
+                $pagecount = new \AndiLeni\Statistics\Pagecount();
+                $data = $pagecount->getChartData();
+                break;
+            case 'visitduration':
+                $visitduration = new \AndiLeni\Statistics\VisitDuration();
+                $data = $visitduration->getChartData();
+                break;
+            case 'lastpage':
+                $lastpage = new \AndiLeni\Statistics\Lastpage();
+                $data = $lastpage->getChartData();
+                break;
+            case 'country':
+                $country = new \AndiLeni\Statistics\Country();
+                $data = $country->getChartData();
+                break;
         }
 
         return new rex_api_result(true, $data);
