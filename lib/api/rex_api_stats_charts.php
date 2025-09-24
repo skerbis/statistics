@@ -93,6 +93,9 @@ class rex_api_stats_charts extends rex_api_function
                 break;
         }
 
-        return new rex_api_result(true, $data);
+        rex_response::cleanOutputBuffers();
+        rex_response::setStatus(rex_response::HTTP_OK);
+        rex_response::sendJson($data);
+        exit;
     }
 }

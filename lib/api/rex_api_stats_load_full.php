@@ -1123,6 +1123,9 @@ class rex_api_stats_load_full extends rex_api_function
     });
 </script>';
 
-        return new rex_api_result(true, $html);
+        rex_response::cleanOutputBuffers();
+        rex_response::setStatus(rex_response::HTTP_OK);
+        rex_response::sendContent($html);
+        exit;
     }
 }

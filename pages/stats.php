@@ -260,12 +260,23 @@ function loadCharts() {
     container.style.display = 'block';
     container.innerHTML = '<p>Charts werden geladen...</p>';
 
-    // Load the full stats page content via AJAX (canonical Redaxo API)
-    fetch('index.php?rex-api-call=stats_load_full&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
-        .then(response => response.json())
+    // Load the full stats page content via AJAX (try backend /redaxo first, then fallback)
+    loadFetch('/redaxo/index.php?rex-api-call=stats_load_full&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>',
+              '/index.php?rex-api-call=stats_load_full&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
+        .then(async response => {
+            const ct = response.headers.get('content-type') || '';
+            if (ct.indexOf('application/json') !== -1) {
+                return response.json();
+            }
+            // not JSON (likely a login page/html) — return text for debugging
+            const text = await response.text();
+            return { ok: false, debugText: text };
+        })
         .then(result => {
-            if (result.ok) {
-                container.innerHTML = result.data;
+            if (result && result.ok) {
+                container.innerHTML = result.data || result.msg || '';
+            } else if (result && result.debugText) {
+                container.innerHTML = '<pre style="white-space:pre-wrap;">' + escapeHtml(result.debugText) + '</pre>';
             } else {
                 container.innerHTML = '<p>Fehler beim Laden der Charts.</p>';
             }
@@ -293,12 +304,22 @@ function loadDetail(type) {
     modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Lade Details...</p></div>');
     modal.modal('show');
 
-    // Load specific detail via AJAX (canonical Redaxo API)
-    fetch('index.php?rex-api-call=stats_detail&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
-        .then(response => response.json())
+    // Load specific detail via AJAX (try backend /redaxo first, then fallback)
+    loadFetch('/redaxo/index.php?rex-api-call=stats_detail&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>',
+              '/index.php?rex-api-call=stats_detail&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
+        .then(async response => {
+            const ct = response.headers.get('content-type') || '';
+            if (ct.indexOf('application/json') !== -1) {
+                return response.json();
+            }
+            const text = await response.text();
+            return { ok: false, debugText: text };
+        })
         .then(result => {
-            if (result.ok) {
-                modalBody.html(result.data);
+            if (result && result.ok) {
+                modalBody.html(result.data || result.msg || '');
+            } else if (result && result.debugText) {
+                modalBody.html('<pre style="white-space:pre-wrap;">' + escapeHtml(result.debugText) + '</pre>');
             } else {
                 modalBody.html('<p>Fehler beim Laden der Details.</p>');
             }
@@ -306,5 +327,30 @@ function loadDetail(type) {
         .catch(error => {
             modalBody.html('<p>Fehler beim Laden der Details.</p>');
         });
+
+    // small helper to escape HTML for debug output
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+}
+</script>
+
+<script>
+// Helper: try primaryURL, if 404 then try fallbackURL
+function loadFetch(primaryURL, fallbackURL) {
+    return fetch(primaryURL, { credentials: 'same-origin' }).then(resp => {
+        if (resp.status === 404 && fallbackURL) {
+            return fetch(fallbackURL, { credentials: 'same-origin' });
+        }
+        return resp;
+    }).catch(err => {
+        if (fallbackURL) return fetch(fallbackURL, { credentials: 'same-origin' });
+        throw err;
+    });
 }
 </script>
