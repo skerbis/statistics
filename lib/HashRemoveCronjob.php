@@ -8,7 +8,12 @@ class rex_statistics_hashremove_cronjob extends rex_cronjob
         $sql = rex_sql::factory();
 
         try {
-            $sql->setQuery("DELETE FROM " . rex::getTable("pagestats_hash") . " WHERE datetime < CURDATE();");
+            $tbl = rex::getTable('pagestats_hash');
+            // only execute if table exists
+            $exists = $sql->getArray("SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $tbl . "' LIMIT 1");
+            if (!empty($exists)) {
+                $sql->setQuery("DELETE FROM " . $tbl . " WHERE datetime < CURDATE();");
+            }
         } catch (rex_sql_exception $e) {
             rex_logger::logException($e);
             return false;

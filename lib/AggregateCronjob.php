@@ -8,39 +8,51 @@ class rex_statistics_aggregate_cronjob extends rex_cronjob
         $sql = rex_sql::factory();
 
         try {
-            // Clear monthly visits
-            $sql->setQuery("TRUNCATE TABLE " . rex::getTable("pagestats_monthly_visits"));
-            // Insert aggregated monthly visits
-            $sql->setQuery("INSERT INTO " . rex::getTable("pagestats_monthly_visits") . " (year, month, domain, count)
-                SELECT YEAR(date), MONTH(date), domain, SUM(count)
-                FROM " . rex::getTable("pagestats_visits_per_day") . "
-                GROUP BY YEAR(date), MONTH(date), domain");
+            // Clear and insert monthly visits (only if source table exists)
+            $src = rex::getTable('pagestats_visits_per_day');
+            $dst = rex::getTable('pagestats_monthly_visits');
+            if ($this->tableExists($src) && $this->tableExists($dst)) {
+                $sql->setQuery("TRUNCATE TABLE " . $dst);
+                $sql->setQuery("INSERT INTO " . $dst . " (year, month, domain, count)
+                    SELECT YEAR(`date`), MONTH(`date`), domain, SUM(`count`)
+                    FROM " . $src . "
+                    GROUP BY YEAR(`date`), MONTH(`date`), domain");
+            }
 
-            // Clear monthly visitors
-            $sql->setQuery("TRUNCATE TABLE " . rex::getTable("pagestats_monthly_visitors"));
-            // Insert aggregated monthly visitors
-            $sql->setQuery("INSERT INTO " . rex::getTable("pagestats_monthly_visitors") . " (year, month, domain, count)
-                SELECT YEAR(date), MONTH(date), domain, SUM(count)
-                FROM " . rex::getTable("pagestats_visitors_per_day") . "
-                GROUP BY YEAR(date), MONTH(date), domain");
+            // Clear and insert monthly visitors (only if source table exists)
+            $src = rex::getTable('pagestats_visitors_per_day');
+            $dst = rex::getTable('pagestats_monthly_visitors');
+            if ($this->tableExists($src) && $this->tableExists($dst)) {
+                $sql->setQuery("TRUNCATE TABLE " . $dst);
+                $sql->setQuery("INSERT INTO " . $dst . " (year, month, domain, count)
+                    SELECT YEAR(`date`), MONTH(`date`), domain, SUM(`count`)
+                    FROM " . $src . "
+                    GROUP BY YEAR(`date`), MONTH(`date`), domain");
+            }
 
-            // Clear yearly visits
-            $sql->setQuery("TRUNCATE TABLE " . rex::getTable("pagestats_yearly_visits"));
-            // Insert aggregated yearly visits
-            $sql->setQuery("INSERT INTO " . rex::getTable("pagestats_yearly_visits") . " (year, domain, count)
-                SELECT YEAR(date), domain, SUM(count)
-                FROM " . rex::getTable("pagestats_visits_per_day") . "
-                GROUP BY YEAR(date), domain");
+            // Clear and insert yearly visits (only if source table exists)
+            $src = rex::getTable('pagestats_visits_per_day');
+            $dst = rex::getTable('pagestats_yearly_visits');
+            if ($this->tableExists($src) && $this->tableExists($dst)) {
+                $sql->setQuery("TRUNCATE TABLE " . $dst);
+                $sql->setQuery("INSERT INTO " . $dst . " (year, domain, count)
+                    SELECT YEAR(`date`), domain, SUM(`count`)
+                    FROM " . $src . "
+                    GROUP BY YEAR(`date`), domain");
+            }
 
-            // Clear pages total
-            $sql->setQuery("TRUNCATE TABLE " . rex::getTable("pagestats_pages_total"));
-            $sql->setQuery("ALTER TABLE " . rex::getTable("pagestats_pages_total") . " AUTO_INCREMENT = 1");
-            // Insert aggregated pages total
-            $sql->setQuery("INSERT IGNORE INTO " . rex::getTable("pagestats_pages_total") . " (url, total_count, last_updated)
-                SELECT url, SUM(count), NOW()
-                FROM " . rex::getTable("pagestats_visits_per_url") . "
-                GROUP BY url
-                ORDER BY SUM(count) DESC");
+            // Clear and insert pages total (only if source and destination exist)
+            $src = rex::getTable('pagestats_visits_per_url');
+            $dst = rex::getTable('pagestats_pages_total');
+            if ($this->tableExists($src) && $this->tableExists($dst)) {
+                $sql->setQuery("TRUNCATE TABLE " . $dst);
+                // reset auto increment if column exists
+                $sql->setQuery("ALTER TABLE " . $dst . " AUTO_INCREMENT = 1");
+                $sql->setQuery("INSERT IGNORE INTO " . $dst . " (url, total_count, last_updated)
+                    SELECT url, SUM(`count`), NOW()
+                    FROM " . $src . "
+                    GROUP BY url");
+            }
 
         } catch (rex_sql_exception $e) {
             rex_logger::logException($e);
@@ -54,5 +66,23 @@ class rex_statistics_aggregate_cronjob extends rex_cronjob
     public function getTypeName()
     {
         return "Aggregiere Statistiken für bessere Performance";
+    }
+
+    /**
+     * Check if a table exists in current database
+     *
+     * @param string $table full table name (with prefix)
+     * @return bool
+     */
+    private function tableExists(string $table): bool
+    {
+        try {
+            $sql = rex_sql::factory();
+            $res = $sql->getArray("SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $table . "' LIMIT 1");
+            return !empty($res);
+        } catch (rex_sql_exception $e) {
+            rex_logger::logException($e);
+            return false;
+        }
     }
 }
