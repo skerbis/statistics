@@ -377,61 +377,61 @@ class rex_api_stats_detail extends rex_api_function
                     title: {},
                     tooltip: {
                         trigger: \'axis\',
-                        formatter: "{b}: <b>{c}</b>",
+                        formatter: "{b}: <b>{c}</b>"
+                    },
                     axisPointer: {
                         type: \'shadow\'
-                    }
-                },
-                grid: {
-                    containLabel: true,
-                    left: \'3%\',
-                    right: \'3%\',
-                    bottom: \'3%\',
-                },
-                xAxis: [{
-                    type: \'category\',
-                    data: [\'Mo\', \'Di\', \'Mi\', \'Do\', \'Fr\', \'Sa\', \'So\'],
-                    axisTick: {
-                        alignWithLabel: true
-                    }
-                }],
-                yAxis: [{
-                    type: \'value\'
-                }],
-                toolbox: {
-                    show: ' . $show_toolbox . ',
-                    orient: \'vertical\',
-                    top: \'10%\',
-                    feature: {
-                        dataZoom: {
-                            yAxisIndex: "none"
-                        },
-                        dataView: {
-                            readOnly: false
-                        },
-                        magicType: {
-                            type: ["line", "bar"]
-                        },
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
-                series: [{
-                    type: \'bar\',
-                    data: data,
-                    label: {
-                        show: false,
                     },
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: \'rgba(0, 0, 0, 0.5)\'
+                    grid: {
+                        containLabel: true,
+                        left: \'3%\',
+                        right: \'3%\',
+                        bottom: \'3%\',
+                    },
+                    xAxis: [{
+                        type: \'category\',
+                        data: [\'Mo\', \'Di\', \'Mi\', \'Do\', \'Fr\', \'Sa\', \'So\'],
+                        axisTick: {
+                            alignWithLabel: true
                         }
-                    }
-                }]
-            };
-            chart_weekday_detail.setOption(chart_weekday_detail_option);
+                    }],
+                    yAxis: [{
+                        type: \'value\'
+                    }],
+                    toolbox: {
+                        show: ' . $show_toolbox . ',
+                        orient: \'vertical\',
+                        top: \'10%\',
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: "none"
+                            },
+                            dataView: {
+                                readOnly: false
+                            },
+                            magicType: {
+                                type: ["line", "bar"]
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    series: [{
+                        type: \'bar\',
+                        data: data,
+                        label: {
+                            show: false,
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: \'rgba(0, 0, 0, 0.5)\'
+                            }
+                        }
+                    }]
+                };
+                chart_weekday_detail.setOption(chart_weekday_detail_option);
             });
             break;
 
@@ -442,61 +442,61 @@ class rex_api_stats_detail extends rex_api_function
                     title: {},
                     tooltip: {
                         trigger: \'axis\',
-                        formatter: "{b} Uhr: <b>{c}</b>",
+                        formatter: "{b} Uhr: <b>{c}</b>"
+                    },
                     axisPointer: {
                         type: \'shadow\'
-                    }
-                },
-                grid: {
-                    containLabel: true,
-                    left: \'3%\',
-                    right: \'3%\',
-                    bottom: \'3%\',
-                },
-                xAxis: [{
-                    type: \'category\',
-                    data: [\'00\', \'01\', \'02\', \'03\', \'04\', \'05\', \'06\', \'07\', \'08\', \'09\', \'10\', \'11\', \'12\', \'13\', \'14\', \'15\', \'16\', \'17\', \'18\', \'19\', \'20\', \'21\', \'22\', \'23\'],
-                    axisTick: {
-                        alignWithLabel: true
-                    }
-                }],
-                yAxis: [{
-                    type: \'value\'
-                }],
-                toolbox: {
-                    show: ' . $show_toolbox . ',
-                    orient: \'vertical\',
-                    top: \'10%\',
-                    feature: {
-                        dataZoom: {
-                            yAxisIndex: "none"
-                        },
-                        dataView: {
-                            readOnly: false
-                        },
-                        magicType: {
-                            type: ["line", "bar"]
-                        },
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
-                series: [{
-                    type: \'bar\',
-                    data: data,
-                    label: {
-                        show: false,
                     },
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: \'rgba(0, 0, 0, 0.5)\'
+                    grid: {
+                        containLabel: true,
+                        left: \'3%\',
+                        right: \'3%\',
+                        bottom: \'3%\',
+                    },
+                    xAxis: [{
+                        type: \'category\',
+                        data: [\'00\', \'01\', \'02\', \'03\', \'04\', \'05\', \'06\', \'07\', \'08\', \'09\', \'10\', \'11\', \'12\', \'13\', \'14\', \'15\', \'16\', \'17\', \'18\', \'19\', \'20\', \'21\', \'22\', \'23\'],
+                        axisTick: {
+                            alignWithLabel: true
                         }
-                    }
-                }]
-            };
-            chart_hour_detail.setOption(chart_hour_detail_option);
+                    }],
+                    yAxis: [{
+                        type: \'value\'
+                    }],
+                    toolbox: {
+                        show: ' . $show_toolbox . ',
+                        orient: \'vertical\',
+                        top: \'10%\',
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: "none"
+                            },
+                            dataView: {
+                                readOnly: false
+                            },
+                            magicType: {
+                                type: ["line", "bar"]
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    series: [{
+                        type: \'bar\',
+                        data: data,
+                        label: {
+                            show: false,
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: \'rgba(0, 0, 0, 0.5)\'
+                            }
+                        }
+                    }]
+                };
+                chart_hour_detail.setOption(chart_hour_detail_option);
             });
             break;
 
@@ -507,61 +507,61 @@ class rex_api_stats_detail extends rex_api_function
                     title: {},
                     tooltip: {
                         trigger: \'axis\',
-                        formatter: "{b} <br> Anzahl: <b>{c}</b>",
+                        formatter: "{b} <br> Anzahl: <b>{c}</b>"
+                    },
                     axisPointer: {
                         type: \'shadow\'
-                    }
-                },
-                grid: {
-                    containLabel: true,
-                    left: \'3%\',
-                    right: \'3%\',
-                    bottom: \'3%\',
-                },
-                xAxis: [{
-                    type: \'category\',
-                    data: data.labels,
-                    axisTick: {
-                        alignWithLabel: true
-                    }
-                }],
-                yAxis: [{
-                    type: \'value\'
-                }],
-                toolbox: {
-                    show: ' . $show_toolbox . ',
-                    orient: \'vertical\',
-                    top: \'10%\',
-                    feature: {
-                        dataZoom: {
-                            yAxisIndex: "none"
-                        },
-                        dataView: {
-                            readOnly: false
-                        },
-                        magicType: {
-                            type: ["line", "bar"]
-                        },
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
-                series: [{
-                    type: \'bar\',
-                    data: data.values,
-                    label: {
-                        show: false,
                     },
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: \'rgba(0, 0, 0, 0.5)\'
+                    grid: {
+                        containLabel: true,
+                        left: \'3%\',
+                        right: \'3%\',
+                        bottom: \'3%\',
+                    },
+                    xAxis: [{
+                        type: \'category\',
+                        data: data.labels,
+                        axisTick: {
+                            alignWithLabel: true
                         }
-                    }
-                }]
-            };
-            chart_country_detail.setOption(chart_country_detail_option);
+                    }],
+                    yAxis: [{
+                        type: \'value\'
+                    }],
+                    toolbox: {
+                        show: ' . $show_toolbox . ',
+                        orient: \'vertical\',
+                        top: \'10%\',
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: "none"
+                            },
+                            dataView: {
+                                readOnly: false
+                            },
+                            magicType: {
+                                type: ["line", "bar"]
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    series: [{
+                        type: \'bar\',
+                        data: data.values,
+                        label: {
+                            show: false,
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: \'rgba(0, 0, 0, 0.5)\'
+                            }
+                        }
+                    }]
+                };
+                chart_country_detail.setOption(chart_country_detail_option);
             });
             break;
 
@@ -572,61 +572,61 @@ class rex_api_stats_detail extends rex_api_function
                     title: {},
                     tooltip: {
                         trigger: \'axis\',
-                        formatter: "{b} <br> <b>{c} mal</b>",
+                        formatter: "{b} <br> <b>{c} mal</b>"
+                    },
                     axisPointer: {
                         type: \'shadow\'
-                    }
-                },
-                grid: {
-                    containLabel: true,
-                    left: \'3%\',
-                    right: \'3%\',
-                    bottom: \'3%\',
-                },
-                xAxis: [{
-                    type: \'category\',
-                    data: data.values,
-                    axisTick: {
-                        alignWithLabel: true
-                    }
-                }],
-                yAxis: [{
-                    type: \'value\'
-                }],
-                toolbox: {
-                    show: ' . $show_toolbox . ',
-                    orient: \'vertical\',
-                    top: \'10%\',
-                    feature: {
-                        dataZoom: {
-                            yAxisIndex: "none"
-                        },
-                        dataView: {
-                            readOnly: false
-                        },
-                        magicType: {
-                            type: ["line", "bar"]
-                        },
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
-                series: [{
-                    type: \'bar\',
-                    data: data.labels,
-                    label: {
-                        show: false,
                     },
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: \'rgba(0, 0, 0, 0.5)\'
+                    grid: {
+                        containLabel: true,
+                        left: \'3%\',
+                        right: \'3%\',
+                        bottom: \'3%\',
+                    },
+                    xAxis: [{
+                        type: \'category\',
+                        data: data.labels,
+                        axisTick: {
+                            alignWithLabel: true
                         }
-                    }
-                }]
-            };
-            chart_visitduration_detail.setOption(chart_visitduration_detail_option);
+                    }],
+                    yAxis: [{
+                        type: \'value\'
+                    }],
+                    toolbox: {
+                        show: ' . $show_toolbox . ',
+                        orient: \'vertical\',
+                        top: \'10%\',
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: "none"
+                            },
+                            dataView: {
+                                readOnly: false
+                            },
+                            magicType: {
+                                type: ["line", "bar"]
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    series: [{
+                        type: \'bar\',
+                        data: data.values,
+                        label: {
+                            show: false,
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: \'rgba(0, 0, 0, 0.5)\'
+                            }
+                        }
+                    }]
+                };
+                chart_visitduration_detail.setOption(chart_visitduration_detail_option);
             });
             break;
     }
