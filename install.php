@@ -34,8 +34,15 @@ rex_sql_table::get(rex::getTable('pagestats_visits_per_url'))
     ->ensureColumn(new rex_sql_column('count', 'int'))
     ->setPrimaryKey(['hash'])
     ->ensureIndex(new rex_sql_index('date', ['date']))
-    ->ensureIndex(new rex_sql_index('url', ['url(255)']))
     ->ensure();
+
+// Add index on url prefix manually, since rex_sql_index doesn't support prefixes
+$sql = rex_sql::factory();
+try {
+    $sql->setQuery("ALTER TABLE " . rex::getTable('pagestats_visits_per_url') . " ADD INDEX idx_url (url(255))");
+} catch (rex_sql_exception $e) {
+    // Index might already exist, ignore
+}
 
 rex_sql_table::get(rex::getTable('pagestats_urlstatus'))
     ->ensureColumn(new rex_sql_column('hash', 'varchar(255)'))
