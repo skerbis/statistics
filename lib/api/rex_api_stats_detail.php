@@ -92,28 +92,6 @@ class rex_api_stats_detail extends rex_api_function
                 $html = $fragment_weekday->parse('data_vertical.php');
                 break;
 
-            case 'hour':
-                $hour = new Hour();
-                $hour_data = $hour->getData();
-
-                $fragment_hour = new rex_fragment();
-                $fragment_hour->setVar('title', $addon->i18n('statistics_hours'));
-                $fragment_hour->setVar('chart', '<div id="chart_hour_detail" style="width: 100%;height:500px"></div>', false);
-                $fragment_hour->setVar('table', $hour->getList(), false);
-                $html = $fragment_hour->parse('data_vertical.php');
-                break;
-
-            case 'country':
-                $country = new Country();
-                $country_data = $country->getChartData();
-
-                $fragment_country = new rex_fragment();
-                $fragment_country->setVar('title', "Länder");
-                $fragment_country->setVar('chart', '<div id="chart_country_detail" style="width: 100%;height:500px"></div>', false);
-                $fragment_country->setVar('table', $country->getList(), false);
-                $html = $fragment_country->parse('data_vertical.php');
-                break;
-
             case 'visitduration':
                 $visitduration = new VisitDuration();
                 $visitduration_data = $visitduration->getChartData();
@@ -144,7 +122,7 @@ class rex_api_stats_detail extends rex_api_function
     }
 
     async function loadDetailChartData(type) {
-        const response = await fetch(\'index.php?rex-api-call=stats_charts&type=\' + type + \'" . $date_qs . "\');
+        const response = await fetch("index.php?rex-api-call=stats_charts&type=" + type + dateQs, { credentials: "same-origin" });
         return await response.json();
     }
 

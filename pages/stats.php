@@ -225,13 +225,7 @@ echo '</div>';
 
 echo '</div>'; // end row
 
-// Full Charts Button (Legacy)
-echo '<div class="row" style="margin-bottom: 20px;">';
-echo '<div class="col-xs-12 text-center">';
-echo '<button class="btn btn-default btn-lg" onclick="loadCharts()">Alle detaillierten Charts laden</button>';
-echo '<div id="charts-container" style="display:none; margin-top: 20px;"></div>';
-echo '</div>';
-echo '</div>';
+// Full charts have been disabled — only detail modals are provided now.
 
 // Detail Modal
 echo '<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">';
@@ -255,36 +249,7 @@ echo '</div>'; // end container
 ?>
 
 <script>
-function loadCharts() {
-    const container = document.getElementById('charts-container');
-    container.style.display = 'block';
-    container.innerHTML = '<p>Charts werden geladen...</p>';
-
-    // Load the full stats page content via AJAX (try backend /redaxo first, then fallback)
-    loadFetch('/redaxo/index.php?rex-api-call=stats_load_full&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>',
-              '/index.php?rex-api-call=stats_load_full&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
-        .then(async response => {
-            const ct = response.headers.get('content-type') || '';
-            if (ct.indexOf('application/json') !== -1) {
-                return response.json();
-            }
-            // not JSON (likely a login page/html) — return text for debugging
-            const text = await response.text();
-            return { ok: false, debugText: text };
-        })
-        .then(result => {
-            if (result && result.ok) {
-                container.innerHTML = result.data || result.msg || '';
-            } else if (result && result.debugText) {
-                container.innerHTML = '<pre style="white-space:pre-wrap;">' + escapeHtml(result.debugText) + '</pre>';
-            } else {
-                container.innerHTML = '<p>Fehler beim Laden der Charts.</p>';
-            }
-        })
-        .catch(error => {
-            container.innerHTML = '<p>Fehler beim Laden der Charts.</p>';
-        });
-}
+// Full charts disabled: loadCharts() removed to prevent fetching the full dashboard.
 
 function loadDetail(type) {
     const modal = $('#detailModal');
