@@ -36,7 +36,7 @@ class rex_statistics_aggregate_cronjob extends rex_cronjob
             $sql->setQuery("TRUNCATE TABLE " . rex::getTable("pagestats_pages_total"));
             $sql->setQuery("ALTER TABLE " . rex::getTable("pagestats_pages_total") . " AUTO_INCREMENT = 1");
             // Insert aggregated pages total
-            $sql->setQuery("INSERT INTO " . rex::getTable("pagestats_pages_total") . " (url, total_count, last_updated)
+            $sql->setQuery("INSERT IGNORE INTO " . rex::getTable("pagestats_pages_total") . " (url, total_count, last_updated)
                 SELECT url, SUM(count), NOW()
                 FROM " . rex::getTable("pagestats_visits_per_url") . "
                 GROUP BY url
