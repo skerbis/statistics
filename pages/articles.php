@@ -69,10 +69,11 @@ foreach ($stats as $stat) {
     }
 }
 
-// Sort by total desc
+// Sort by total desc and limit to top 100 for performance
 usort($article_stats, function($a, $b) {
     return $b['total'] <=> $a['total'];
 });
+$article_stats = array_slice($article_stats, 0, 100); // Limit to top 100
 
 // Display table
 $table = '<table class="table table-striped table-hover dt_order_second">';
