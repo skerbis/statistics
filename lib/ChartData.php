@@ -347,7 +347,7 @@ class chartData
         }
 
         // get total visits
-        $result_total = $sql->getArray('SELECT DATE_FORMAT(date,"%b %Y") AS "month", IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_visits_per_day') . ' GROUP BY month ORDER BY date ASC');
+        $result_total = $sql->getArray('SELECT CONCAT(year, "-", LPAD(month, 2, "0")) AS month_year, IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_monthly_visits') . ' GROUP BY year, month ORDER BY year, month ASC');
 
 
         // set count to each month
@@ -371,7 +371,7 @@ class chartData
         // do this procedure for each domain
         if ($this->addon->getConfig('statistics_combine_all_domains') == false) {
             foreach ($domains as $domain) {
-                $result_domain = $sql->getArray('SELECT DATE_FORMAT(date,"%b %Y") AS "month", IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_visits_per_day') . ' WHERE domain = :domain GROUP BY month ORDER BY date ASC', ['domain' => $domain['domain']]);
+                $result_domain = $sql->getArray('SELECT CONCAT(year, "-", LPAD(month, 2, "0")) AS month_year, IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_monthly_visits') . ' WHERE domain = :domain GROUP BY year, month ORDER BY year, month ASC', ['domain' => $domain['domain']]);
 
                 $serie_data = [];
                 foreach ($period as $value) {
@@ -399,7 +399,7 @@ class chartData
         // VISITORS
 
         // get total visits
-        $result_total = $sql->getArray('SELECT DATE_FORMAT(date,"%b %Y") AS "month", IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_visitors_per_day') . ' GROUP BY month ORDER BY date ASC');
+        $result_total = $sql->getArray('SELECT CONCAT(year, "-", LPAD(month, 2, "0")) AS month_year, IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_monthly_visitors') . ' GROUP BY year, month ORDER BY year, month ASC');
 
         $serie_data = [];
         foreach ($period as $value) {
@@ -427,7 +427,7 @@ class chartData
         // do this procedure for each domain
         if ($this->addon->getConfig('statistics_combine_all_domains') == false) {
             foreach ($domains as $domain) {
-                $result_domain = $sql->getArray('SELECT DATE_FORMAT(date,"%b %Y") AS "month", IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_visitors_per_day') . ' WHERE domain = :domain GROUP BY month ORDER BY date ASC', ['domain' => $domain['domain']]);
+                $result_domain = $sql->getArray('SELECT CONCAT(year, "-", LPAD(month, 2, "0")) AS month_year, IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_monthly_visitors') . ' WHERE domain = :domain GROUP BY year, month ORDER BY year, month ASC', ['domain' => $domain['domain']]);
 
                 $serie_data = [];
                 foreach ($period as $value) {
@@ -501,7 +501,7 @@ class chartData
         }
 
         // get total visits
-        $result_total = $sql->getArray('SELECT DATE_FORMAT(date,"%Y") AS "year", IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_visits_per_day') . ' GROUP BY year ORDER BY date ASC');
+        $result_total = $sql->getArray('SELECT year, IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_yearly_visits') . ' GROUP BY year ORDER BY year ASC');
 
         // set count to each year
         foreach ($result_total as $row) {
@@ -524,7 +524,7 @@ class chartData
         // do this procedure for each domain
         if ($this->addon->getConfig('statistics_combine_all_domains') == false) {
             foreach ($domains as $domain) {
-                $result_domain = $sql->getArray('SELECT DATE_FORMAT(date,"%Y") AS "year", IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_visits_per_day') . ' WHERE domain = :domain GROUP BY year ORDER BY date ASC', ['domain' => $domain['domain']]);
+                $result_domain = $sql->getArray('SELECT year, IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_yearly_visits') . ' WHERE domain = :domain GROUP BY year ORDER BY year ASC', ['domain' => $domain['domain']]);
 
                 $serie_data = [];
                 foreach ($period as $value) {
@@ -552,7 +552,7 @@ class chartData
         // VISITORS
 
         // get total visits
-        $result_total = $sql->getArray('SELECT DATE_FORMAT(date,"%Y") AS "year", IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_visitors_per_day') . ' GROUP BY year ORDER BY date ASC');
+        $result_total = $sql->getArray('SELECT year, IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_yearly_visitors') . ' GROUP BY year ORDER BY year ASC');
 
         $serie_data = [];
         foreach ($period as $value) {
@@ -580,7 +580,7 @@ class chartData
         // do this procedure for each domain
         if ($this->addon->getConfig('statistics_combine_all_domains') == false) {
             foreach ($domains as $domain) {
-                $result_domain = $sql->getArray('SELECT DATE_FORMAT(date,"%Y") AS "year", IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_visitors_per_day') . ' WHERE domain = :domain GROUP BY year ORDER BY date ASC', ['domain' => $domain['domain']]);
+                $result_domain = $sql->getArray('SELECT year, IFNULL(SUM(count),0) AS "count" FROM ' . rex::getTable('pagestats_yearly_visitors') . ' WHERE domain = :domain GROUP BY year ORDER BY year ASC', ['domain' => $domain['domain']]);
 
                 $serie_data = [];
                 foreach ($period as $value) {

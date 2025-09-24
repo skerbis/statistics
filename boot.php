@@ -28,6 +28,7 @@ if (rex::isBackend()) {
 
     if (rex_addon::get('cronjob')->isAvailable() && !rex::isSafeMode()) {
         rex_cronjob_manager::registerType('rex_statistics_hashremove_cronjob');
+        rex_cronjob_manager::registerType('rex_statistics_aggregate_cronjob');
     }
 
     $pagination_scroll = $addon->getConfig('statistics_scroll_pagination');
