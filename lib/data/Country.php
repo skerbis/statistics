@@ -17,13 +17,23 @@ class Country
         $sql = rex_sql::factory();
         $res = $sql->getArray('SELECT name, count FROM ' . rex::getTable('pagestats_data') . ' where type = "country" ORDER BY count DESC');
 
-        $labels = array_column($res, "name");
-        $values = array_column($res, "count");
+            $items = [];
+            foreach ($res as $row) {
+                $items[] = [
+                    'name' => $row['name'],
+                    'value' => (int) $row['count']
+                ];
+            }
 
-        return [
-            "labels" => $labels,
-            "values" => $values
-        ];
+            $top = 15;
+            if (count($items) <= $top) return $items;
+
+            $topItems = array_slice($items, 0, $top);
+            $other = array_slice($items, $top);
+            $otherSum = 0;
+            foreach ($other as $o) $otherSum += $o['value'];
+            $topItems[] = ['name' => 'Andere', 'value' => $otherSum];
+            return $topItems;
     }
 
 

@@ -46,16 +46,27 @@ class Browser
     {
         $sql = $this->getSql();
 
-        $data = [];
-
+        $items = [];
         foreach ($sql as $row) {
-            $data[] = [
+            $items[] = [
                 'name' => $row->getValue('name'),
-                'value' => $row->getValue('count')
+                'value' => (int) $row->getValue('count')
             ];
         }
 
-        return $data;
+        // keep top 15, aggregate rest into "Andere"
+        $top = 15;
+        if (count($items) <= $top) {
+            return $items;
+        }
+
+        $topItems = array_slice($items, 0, $top);
+        $other = array_slice($items, $top);
+        $otherSum = 0;
+        foreach ($other as $o) $otherSum += $o['value'];
+
+        $topItems[] = ['name' => 'Andere', 'value' => $otherSum];
+        return $topItems;
     }
 
 

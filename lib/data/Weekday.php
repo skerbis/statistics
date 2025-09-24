@@ -62,21 +62,28 @@ class Weekday
     {
         $sql = $this->getSql();
 
-        $data = [
-            0 => 0,
-            1 => 0,
-            2 => 0,
-            3 => 0,
-            4 => 0,
-            5 => 0,
-            6 => 0,
-        ];
-
+        $counts = [0,0,0,0,0,0,0];
         foreach ($sql as $row) {
-            $data[intval($row->getValue('name')) - 1] = $row->getValue('count');
+            $idx = intval($row->getValue('name')) - 1;
+            if ($idx >=0 && $idx < 7) {
+                $counts[$idx] = (int)$row->getValue('count');
+            }
         }
 
-        return $data;
+        $labels = [
+            $this->addon->i18n('statistics_monday'),
+            $this->addon->i18n('statistics_tuesday'),
+            $this->addon->i18n('statistics_wednesday'),
+            $this->addon->i18n('statistics_thursday'),
+            $this->addon->i18n('statistics_friday'),
+            $this->addon->i18n('statistics_saturday'),
+            $this->addon->i18n('statistics_sunday'),
+        ];
+
+        return [
+            'labels' => $labels,
+            'values' => $counts,
+        ];
     }
 
 

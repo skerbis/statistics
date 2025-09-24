@@ -46,13 +46,21 @@ class Hour
     {
         $sql = $this->getSql();
 
-        $hours = [0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0, 9 => 0, 10 => 0, 11 => 0, 12 => 0, 13 => 0, 14 => 0, 15 => 0, 16 => 0, 17 => 0, 18 => 0, 19 => 0, 20 => 0, 21 => 0, 22 => 0, 23 => 0];
-
+        $counts = array_fill(0, 24, 0);
         foreach ($sql as $row) {
-            $hours[intval($row->getValue('name'))] = $row->getValue('count');
+            $h = intval($row->getValue('name'));
+            if ($h >=0 && $h <= 23) $counts[$h] = (int)$row->getValue('count');
         }
 
-        return $hours;
+        $labels = [];
+        for ($i = 0; $i < 24; $i++) {
+            $labels[] = sprintf('%02d:00', $i);
+        }
+
+        return [
+            'labels' => $labels,
+            'values' => $counts,
+        ];
     }
 
 
