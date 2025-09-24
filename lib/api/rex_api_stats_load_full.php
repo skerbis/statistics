@@ -22,7 +22,7 @@ use AndiLeni\Statistics\VisitDuration;
 class rex_api_stats_load_full extends rex_api_function
 {
 
-    protected $published = true;
+    protected $published = false;
 
     /**
      * Execute the API call
@@ -199,28 +199,6 @@ class rex_api_stats_load_full extends rex_api_function
         $html = $main_chart_html . $browser_html . $browsertype_html . $os_html . $brand_html . $model_html . $weekday_html . $hour_html . $pagecount_html . $visitduration_html . $lastpage_html . $country_html . $bots_html;
 
         $show_toolbox = rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false';
-        $is_de = (trim(rex::getUser()->getLanguage()) == '' || trim(rex::getUser()->getLanguage()) == 'de_de') && rex::getProperty('lang') == 'de_de';
-        $de_lang = $is_de ? '
-            language: {
-                "search": "_INPUT_",
-                "searchPlaceholder": "Suchen",
-                "decimal": ",",
-                "info": "Einträge _START_-_END_ von _TOTAL_",
-                "emptyTable": "Keine Daten",
-                "infoEmpty": "0 von 0 Einträgen",
-                "infoFiltered": "(von _MAX_ insgesamt)",
-                "lengthMenu": "_MENU_ anzeigen",
-                "loadingRecords": "Lade...",
-                "zeroRecords": "Keine passenden Datensätze gefunden",
-                "thousands": ".",
-                "paginate": {
-                    "first": "<<",
-                    "last": ">>",
-                    "next": ">",
-                    "previous": "<"
-                },
-            },
-            ' : '';
 
         // Add JavaScript for charts
         $html .= '<script>
@@ -1102,7 +1080,7 @@ class rex_api_stats_load_full extends rex_api_function
             ],
             "search": {
                 "caseInsensitive": true
-            }' . $de_lang . '
+            }
         });
 
         $(\'.dt_order_first\').DataTable({
@@ -1115,7 +1093,7 @@ class rex_api_stats_load_full extends rex_api_function
             ],
             "search": {
                 "caseInsensitive": true
-            }' . $de_lang . '
+            }
         });
 
         $(\'.dt_order_default\').DataTable({
@@ -1125,7 +1103,7 @@ class rex_api_stats_load_full extends rex_api_function
             "lengthMenu": [5, 10, 50, 100],
             "search": {
                 "caseInsensitive": true
-            }' . $de_lang . '
+            }
         });
 
         $(\'.dt_bots\').DataTable({
@@ -1138,7 +1116,7 @@ class rex_api_stats_load_full extends rex_api_function
             },
             "order": [
                 [3, "desc"]
-            ]' . $de_lang . '
+            ]
         });
     });
 </script>';
