@@ -33,7 +33,8 @@ class rex_statistics_aggregate_cronjob extends rex_cronjob
                 GROUP BY YEAR(date), domain");
 
             // Clear pages total
-            $sql->setQuery("DELETE FROM " . rex::getTable("pagestats_pages_total"));
+            $sql->setQuery("TRUNCATE TABLE " . rex::getTable("pagestats_pages_total"));
+            $sql->setQuery("ALTER TABLE " . rex::getTable("pagestats_pages_total") . " AUTO_INCREMENT = 1");
             // Insert aggregated pages total
             $sql->setQuery("INSERT INTO " . rex::getTable("pagestats_pages_total") . " (url, total_count, last_updated)
                 SELECT url, SUM(count), NOW()
