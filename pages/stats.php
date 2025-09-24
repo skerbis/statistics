@@ -240,229 +240,248 @@ echo $fragment->parse('core/page/section.php');
         var theme = "shine";
     }
 
-    var chart_visits_daily = echarts.init(document.getElementById('chart_visits_daily'), theme);
-    var chart_visits_daily_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-        },
-        dataZoom: [{
-            id: 'dataZoomX',
-            type: 'slider',
-            xAxisIndex: [0],
-            filterMode: 'filter'
-        }],
-        grid: {
-            left: '5%',
-            right: '5%',
-            // bottom: '10%',
-            // top: '12%',
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar", 'stack']
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        legend: {
-            data: <?php echo json_encode($main_chart_data['legend']) ?>,
-            // orient: 'vertical',
-            type: 'scroll',
-            // top: 20,
-            // bottom: 20,
-            right: '5%',
-            align: 'left',
-        },
-        xAxis: {
-            data: <?php echo json_encode($main_chart_data['xaxis']) ?>,
-            type: 'category',
-        },
-        yAxis: {},
-        series: <?php echo json_encode($main_chart_data['series']) ?>
-    };
+    async function loadChartData(type) {
+        const response = await fetch('index.php?page=statistics/api&api=stats_charts&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>');
+        return await response.json();
+    }
 
-    // Display the chart using the configuration items and data just specified.
-    chart_visits_daily.setOption(chart_visits_daily_option);
+    var chart_visits_daily = echarts.init(document.getElementById('chart_visits_daily'), theme);
+    loadChartData('main').then(data => {
+        var chart_visits_daily_option = {
+            title: {},
+            tooltip: {
+                trigger: 'axis',
+            },
+            dataZoom: [{
+                id: 'dataZoomX',
+                type: 'slider',
+                xAxisIndex: [0],
+                filterMode: 'filter'
+            }],
+            grid: {
+                left: '5%',
+                right: '5%',
+            },
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: "none"
+                    },
+                    dataView: {
+                        readOnly: false
+                    },
+                    magicType: {
+                        type: ["line", "bar", 'stack']
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            legend: {
+                data: data.legend,
+                type: 'scroll',
+                right: '5%',
+                align: 'left',
+            },
+            xAxis: {
+                data: data.xaxis,
+                type: 'category',
+            },
+            yAxis: {},
+            series: data.series
+        };
+        chart_visits_daily.setOption(chart_visits_daily_option);
+    });
 
 
 
     var chart_visits_monthly = echarts.init(document.getElementById('chart_visits_monthly'), theme);
-    var chart_visits_monthly_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-        },
-        dataZoom: [{
-            id: 'dataZoomX',
-            type: 'slider',
-            xAxisIndex: [0],
-            filterMode: 'filter'
-        }],
-        grid: {
-            left: '5%',
-            right: '5%',
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar", 'stack']
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        legend: {
-            data: <?php echo json_encode($chart_data_monthly['legend']) ?>,
-            right: '5%',
-            type: 'scroll',
-        },
-        xAxis: {
-            data: <?php echo json_encode($chart_data_monthly['xaxis']) ?>,
-            type: 'category',
-        },
-        yAxis: {},
-        series: <?php echo json_encode($chart_data_monthly['series']) ?>
-    };
-    chart_visits_monthly.setOption(chart_visits_monthly_option);
+    // Lazy load monthly data
+    var monthlyLoaded = false;
+    function loadMonthly() {
+        if (!monthlyLoaded) {
+            loadChartData('monthly').then(data => {
+                var chart_visits_monthly_option = {
+                    title: {},
+                    tooltip: {
+                        trigger: 'axis',
+                    },
+                    dataZoom: [{
+                        id: 'dataZoomX',
+                        type: 'slider',
+                        xAxisIndex: [0],
+                        filterMode: 'filter'
+                    }],
+                    grid: {
+                        left: '5%',
+                        right: '5%',
+                    },
+                    toolbox: {
+                        show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                        orient: 'vertical',
+                        top: '10%',
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: "none"
+                            },
+                            dataView: {
+                                readOnly: false
+                            },
+                            magicType: {
+                                type: ["line", "bar", 'stack']
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    legend: {
+                        data: data.legend,
+                        right: '5%',
+                        type: 'scroll',
+                    },
+                    xAxis: {
+                        data: data.xaxis,
+                        type: 'category',
+                    },
+                    yAxis: {},
+                    series: data.series
+                };
+                chart_visits_monthly.setOption(chart_visits_monthly_option);
+                monthlyLoaded = true;
+            });
+        }
+    }
 
 
 
     var chart_visits_yearly = echarts.init(document.getElementById('chart_visits_yearly'), theme);
-    var chart_visits_yearly_option = {
-        title: {},
-        tooltip: {
-            trigger: 'axis',
-        },
-        dataZoom: [{
-            id: 'dataZoomX',
-            type: 'slider',
-            xAxisIndex: [0],
-            filterMode: 'filter'
-        }],
-        grid: {
-            left: '5%',
-            right: '5%',
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataZoom: {
-                    yAxisIndex: "none"
-                },
-                dataView: {
-                    readOnly: false
-                },
-                magicType: {
-                    type: ["line", "bar", 'stack']
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        legend: {
-            data: <?php echo json_encode($chart_data_yearly['legend']) ?>,
-            right: '5%',
-            type: 'scroll',
-        },
-        xAxis: {
-            data: <?php echo json_encode($chart_data_yearly['xaxis']) ?>,
-            type: 'category',
-        },
-        yAxis: {},
-        series: <?php echo json_encode($chart_data_yearly['series']) ?>
-    };
-    chart_visits_yearly.setOption(chart_visits_yearly_option);
+    // Lazy load yearly data
+    var yearlyLoaded = false;
+    function loadYearly() {
+        if (!yearlyLoaded) {
+            loadChartData('yearly').then(data => {
+                var chart_visits_yearly_option = {
+                    title: {},
+                    tooltip: {
+                        trigger: 'axis',
+                    },
+                    dataZoom: [{
+                        id: 'dataZoomX',
+                        type: 'slider',
+                        xAxisIndex: [0],
+                        filterMode: 'filter'
+                    }],
+                    grid: {
+                        left: '5%',
+                        right: '5%',
+                    },
+                    toolbox: {
+                        show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                        orient: 'vertical',
+                        top: '10%',
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: "none"
+                            },
+                            dataView: {
+                                readOnly: false
+                            },
+                            magicType: {
+                                type: ["line", "bar", 'stack']
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    legend: {
+                        data: data.legend,
+                        right: '5%',
+                        type: 'scroll',
+                    },
+                    xAxis: {
+                        data: data.xaxis,
+                        type: 'category',
+                    },
+                    yAxis: {},
+                    series: data.series
+                };
+                chart_visits_yearly.setOption(chart_visits_yearly_option);
+                yearlyLoaded = true;
+            });
+        }
+    }
 
 
 
     var visits_heatmap = echarts.init(document.getElementById('chart_visits_heatmap'), theme);
-    var option_heatmap = {
-        title: {},
-        tooltip: {
-            show: true,
-            formatter: function(p) {
-                var format = echarts.format.formatTime('dd.MM.yyyy', p.data[0]);
-                return format + '<br><b>' + p.data[1] + ' Aufrufe</b>';
-            }
-        },
-        toolbox: {
-            show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
-            orient: 'vertical',
-            top: '10%',
-            feature: {
-                dataView: {
-                    readOnly: false
+    loadChartData('heatmap').then(data => {
+        var option_heatmap = {
+            title: {},
+            tooltip: {
+                show: true,
+                formatter: function(p) {
+                    var format = echarts.format.formatTime('dd.MM.yyyy', p.data[0]);
+                    return format + '<br><b>' + p.data[1] + ' Aufrufe</b>';
+                }
+            },
+            toolbox: {
+                show: <?= rex_config::get('statistics', 'statistics_show_chart_toolbox') ? 'true' : 'false' ?>,
+                orient: 'vertical',
+                top: '10%',
+                feature: {
+                    dataView: {
+                        readOnly: false
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            calendar: {
+                top: '90',
+                left: '5%',
+                right: '5%',
+                cellSize: ['auto', 15],
+                range: <?php echo date('Y') ?>,
+                itemStyle: {
+                    borderWidth: 0.5
                 },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        calendar: {
-            // top: 120,
-            top: '90',
-            left: '5%',
-            right: '5%',
-            cellSize: ['auto', 15],
-            range: <?php echo date('Y') ?>,
-            itemStyle: {
-                borderWidth: 0.5
+                yearLabel: {
+                    show: false
+                },
+                monthLabel: {
+                    nameMap: [
+                        'Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
+                    ],
+                },
+                dayLabel: {
+                    nameMap: [
+                        'So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'
+                    ]
+                }
             },
-            yearLabel: {
-                show: false
+            series: {
+                data: data.data,
+                type: 'heatmap',
+                coordinateSystem: 'calendar',
             },
-            monthLabel: {
-                nameMap: [
-                    'Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
-                ],
+            visualMap: {
+                type: 'continuous',
+                itemWidth: 20,
+                itemHeight: 250,
+                min: 0,
+                max: data.max,
+                calculable: true,
+                orient: 'horizontal',
+                left: 'center',
+                top: 'top'
             },
-            dayLabel: {
-                nameMap: [
-                    'So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'
-                ]
-            }
-        },
-        series: {
-            data: <?php echo json_encode($data_heatmap['data']) ?>,
-            type: 'heatmap',
-            coordinateSystem: 'calendar',
-        },
-        visualMap: {
-            type: 'continuous',
-            itemWidth: 20,
-            itemHeight: 250,
-            min: 0,
-            max: <?php echo $data_heatmap['max'] ?>,
-            calculable: true,
-            orient: 'horizontal',
-            left: 'center',
-            top: 'top'
-        },
-    };
-    visits_heatmap.setOption(option_heatmap);
+        };
+        visits_heatmap.setOption(option_heatmap);
+    });
 
 
 
@@ -1084,6 +1103,8 @@ echo $fragment->parse('core/page/section.php');
         chart_visits_daily.resize();
         chart_visits_monthly.resize();
         chart_visits_yearly.resize();
+        loadMonthly();
+        loadYearly();
     })
 
 
