@@ -388,6 +388,22 @@ function initDetailCharts(type, dateQs) {
                     });
                 }).catch(()=>{});
                 break;
+
+            case 'hour':
+                // hours as bar chart with 24 labels
+                loadDetailChartData(type, dateQs).then(data => {
+                    const el = document.getElementById('chart_hour_detail');
+                    if (!el) return;
+                    const theme = (typeof rex !== 'undefined' && (rex.theme == 'dark' || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && rex.theme == 'auto'))) ? 'dark' : 'shine';
+                    const chart = echarts.init(el, theme);
+                    chart.setOption({
+                        tooltip: { trigger: 'axis' },
+                        xAxis: { type: 'category', data: data.labels || [] },
+                        yAxis: { type: 'value' },
+                        series: [{ type: 'bar', data: data.values || data }]
+                    });
+                }).catch(()=>{});
+                break;
             // hour, country, visitduration intentionally show only a table — no charts requested
         }
     } catch (e) {

@@ -45,11 +45,12 @@ class PageDetails
      */
     public function getList(): string
     {
-        $list = rex_list::factory('SELECT date, count FROM ' . rex::getTable('pagestats_visits_per_url') . ' WHERE url LIKE CONCAT("%", "' . $this->url . '") and date between "' . $this->filter_date_helper->date_start->format('Y-m-d') . '" and "' . $this->filter_date_helper->date_end->format('Y-m-d') . '" ORDER BY count DESC', 10000);
+    // Compare only the path part of stored URLs (extract from first slash)
+    $list = rex_list::factory('SELECT date, count FROM ' . rex::getTable('pagestats_visits_per_url') . ' WHERE SUBSTRING(url, LOCATE("/", url)) LIKE :path and date between "' . $this->filter_date_helper->date_start->format('Y-m-d') . '" and "' . $this->filter_date_helper->date_end->format('Y-m-d') . '" ORDER BY count DESC', 10000);
 
         $list->setColumnLabel('date', 'Datum');
         $list->setColumnLabel('count', 'Anzahl');
-        $list->setColumnParams('url', ['url' => '###url###']);
+    $list->setColumnParams('url', ['url' => '###url###']);
         $list->addTableAttribute('class', 'table-bordered dt_order_first statistics_table table-striped table-hover');
         $list->setColumnFormat('date', 'date', 'd.m.Y');
         $list->setColumnLayout('date', ['<th>###VALUE###</th>', '<td data-sort="###date###">###VALUE###</td>']);

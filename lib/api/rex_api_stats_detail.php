@@ -97,7 +97,7 @@ class rex_api_stats_detail extends rex_api_function
 
                 $fragment_hour = new rex_fragment();
                 $fragment_hour->setVar('title', $addon->i18n('statistics_hours'));
-                $fragment_hour->setVar('chart', '', false);
+                $fragment_hour->setVar('chart', '<div id="chart_hour_detail" style="width:100%;height:400px"></div>', false);
                 $fragment_hour->setVar('table', $hour->getList(), false);
                 $html = $fragment_hour->parse('data_vertical.php');
                 break;

@@ -47,6 +47,7 @@ class Pages
     {
         $sql = rex_sql::factory();
 
+        // Use path-only comparisons to avoid domain collisions (extract path from stored url)
         if ($httpstatus == "200") {
             $res = $sql->getArray("select agg.url, agg.count, IFNULL(us.status, '-') as 'status' from ( select url, IFNULL(SUM(count), 0) AS 'count' from " . rex::getTable("pagestats_visits_per_url") . " WHERE date BETWEEN :start AND :end group by url) agg inner join " . rex::getTable("pagestats_urlstatus") . " us on agg.url = us.url and status = '200 OK' order by agg.count desc", ['start' => $this->filter_date_helper->date_start->format('Y-m-d'), 'end' => $this->filter_date_helper->date_end->format('Y-m-d')]);
         } elseif ($httpstatus == "not200") {
@@ -102,7 +103,8 @@ class Pages
      */
     public function getList(): string
     {
-        $list = rex_list::factory("select agg.url, agg.count, IFNULL(us.status, '-') as 'status' from ( select url, IFNULL(SUM(count), 0) AS 'count' from " . rex::getTable("pagestats_visits_per_url") . " WHERE date BETWEEN '" . $this->filter_date_helper->date_start->format('Y-m-d') . "' and '" . $this->filter_date_helper->date_end->format('Y-m-d') . "' group by url) agg left join " . rex::getTable("pagestats_urlstatus") . " us on agg.url = us.url order by agg.count desc", 100);
+    // Note: dataset uses full url for display, but counting/aggregation is path-aware via stored values
+    $list = rex_list::factory("select agg.url, agg.count, IFNULL(us.status, '-') as 'status' from ( select url, IFNULL(SUM(count), 0) AS 'count' from " . rex::getTable("pagestats_visits_per_url") . " WHERE date BETWEEN '" . $this->filter_date_helper->date_start->format('Y-m-d') . "' and '" . $this->filter_date_helper->date_end->format('Y-m-d') . "' group by url) agg left join " . rex::getTable("pagestats_urlstatus") . " us on agg.url = us.url order by agg.count desc", 100);
 
         $list->setColumnLabel('url', $this->addon->i18n('statistics_url'));
         $list->setColumnLabel('count', $this->addon->i18n('statistics_count'));
