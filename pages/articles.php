@@ -23,8 +23,9 @@ echo $filter_fragment->parse('filter.php');
 $sql = rex_sql::factory();
 $articles = $sql->getArray("SELECT id, name, clang_id FROM rex_article WHERE status = 1 ORDER BY name");
 
-// For each article, construct URL and get stats
-$article_stats = [];
+// Collect all paths for batch query
+$paths = [];
+$article_map = [];
 foreach ($articles as $article) {
     $url = rex_getUrl($article['id'], $article['clang_id']);
     // Remove protocol and domain to match stored URLs
@@ -34,25 +35,37 @@ foreach ($articles as $article) {
         $path .= '?' . $parsed['query'];
     }
 
-    // Get total visits for this path: compare only the path part of stored URLs (strip domain)
-    // Stored URLs have format "domain/path...". We extract the path starting at the first slash
-    // and compare that to the article path to avoid '%' matching everything for '/'.
-    $stats = $sql->getArray("SELECT SUM(count) as total FROM " . rex::getTable('pagestats_visits_per_url') . " WHERE SUBSTRING(url, LOCATE('/', url)) LIKE :path AND date BETWEEN :start AND :end", [
-        'path' => $path . '%',
-        'start' => $filter_date_helper->date_start->format('Y-m-d'),
-        'end' => $filter_date_helper->date_end->format('Y-m-d')
-    ]);
+    $paths[] = $path;
+    $article_map[$path] = $article;
+}
 
-    $total = $stats[0]['total'] ?? 0;
-    if ($total > 0) {
-        $article_stats[] = [
-            'id' => $article['id'],
-            'name' => $article['name'],
-            'clang_id' => $article['clang_id'],
-            'url' => $url,
-            'path' => $path,
-            'total' => $total
-        ];
+// Batch query to get stats for all paths at once
+$path_placeholders = str_repeat('?,', count($paths) - 1) . '?';
+$query = "SELECT SUBSTRING(url, LOCATE('/', url)) AS path_part, SUM(count) AS total 
+          FROM " . rex::getTable('pagestats_visits_per_url') . " 
+          WHERE SUBSTRING(url, LOCATE('/', url)) IN ($path_placeholders) 
+          AND date BETWEEN ? AND ? 
+          GROUP BY path_part";
+$params = array_merge($paths, [$filter_date_helper->date_start->format('Y-m-d'), $filter_date_helper->date_end->format('Y-m-d')]);
+$stats = $sql->getArray($query, $params);
+
+// Map stats back to articles
+$article_stats = [];
+foreach ($stats as $stat) {
+    $path = $stat['path_part'];
+    if (isset($article_map[$path])) {
+        $article = $article_map[$path];
+        $total = $stat['total'];
+        if ($total > 0) {
+            $article_stats[] = [
+                'id' => $article['id'],
+                'name' => $article['name'],
+                'clang_id' => $article['clang_id'],
+                'url' => rex_getUrl($article['id'], $article['clang_id']),
+                'path' => $path,
+                'total' => $total
+            ];
+        }
     }
 }
 

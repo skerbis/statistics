@@ -41,17 +41,36 @@ class rex_statistics_aggregate_cronjob extends rex_cronjob
                     GROUP BY YEAR(`date`), domain");
             }
 
-            // Clear and insert pages total (only if source and destination exist)
+            // Clear and insert pages total (only if source and destination exist) - now in chunks to avoid timeouts
             $src = rex::getTable('pagestats_visits_per_url');
             $dst = rex::getTable('pagestats_pages_total');
             if ($this->tableExists($src) && $this->tableExists($dst)) {
                 $sql->setQuery("TRUNCATE TABLE " . $dst);
                 // reset auto increment if column exists
                 $sql->setQuery("ALTER TABLE " . $dst . " AUTO_INCREMENT = 1");
-                $sql->setQuery("INSERT IGNORE INTO " . $dst . " (url, total_count, last_updated)
-                    SELECT url, SUM(`count`), NOW()
-                    FROM " . $src . "
-                    GROUP BY url");
+
+                // Get total distinct URLs
+                $totalUrls = $sql->getArray('SELECT COUNT(DISTINCT url) AS c FROM ' . $src)[0]['c'] ?? 0;
+                $chunkSize = 1000; // Process in chunks of 1000 URLs
+                $processed = 0;
+
+                while ($processed < $totalUrls) {
+                    // Get next chunk of URLs
+                    $urls = $sql->getArray('SELECT DISTINCT url FROM ' . $src . ' ORDER BY url LIMIT ' . $chunkSize . ' OFFSET ' . $processed);
+                    if (empty($urls)) break;
+
+                    // Aggregate for this chunk
+                    $urlList = array_map(function ($r) use ($sql) { return $sql->escape($r['url']); }, $urls);
+                    $inClause = "'" . implode("','", $urlList) . "'";
+
+                    $sql->setQuery("INSERT INTO " . $dst . " (url, total_count, last_updated)
+                        SELECT url, SUM(`count`), NOW()
+                        FROM " . $src . "
+                        WHERE url IN (" . $inClause . ")
+                        GROUP BY url");
+
+                    $processed += count($urls);
+                }
             }
 
         } catch (rex_sql_exception $e) {
