@@ -24,7 +24,7 @@ class rex_api_stats_detail extends rex_api_function
     /**
      * Execute the API call
      */
-    public function execute(): void
+    public function execute(): rex_api_result
     {
         $addon = rex_addon::get('statistics');
 
@@ -670,8 +670,6 @@ class rex_api_stats_detail extends rex_api_function
     });
 </script>';
 
-        ob_clean();
-        echo $html;
-        exit();
+        return new rex_api_result(true, $html);
     }
 }

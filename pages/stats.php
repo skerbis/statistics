@@ -266,9 +266,13 @@ function loadCharts() {
 
     // Load the full stats page content via AJAX
     fetch('index.php?page=statistics/api&api=stats_load_full&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
-        .then(response => response.text())
-        .then(html => {
-            container.innerHTML = html;
+        .then(response => response.json())
+        .then(result => {
+            if (result.ok) {
+                container.innerHTML = result.data;
+            } else {
+                container.innerHTML = '<p>Fehler beim Laden der Charts.</p>';
+            }
         })
         .catch(error => {
             container.innerHTML = '<p>Fehler beim Laden der Charts.</p>';
@@ -295,9 +299,13 @@ function loadDetail(type) {
 
     // Load specific detail via AJAX
     fetch('index.php?page=statistics/api&api=stats_detail&type=' + type + '&date_start=<?= urlencode($filter_date_helper->date_start->format('Y-m-d')) ?>&date_end=<?= urlencode($filter_date_helper->date_end->format('Y-m-d')) ?>')
-        .then(response => response.text())
-        .then(html => {
-            modalBody.html(html);
+        .then(response => response.json())
+        .then(result => {
+            if (result.ok) {
+                modalBody.html(result.data);
+            } else {
+                modalBody.html('<p>Fehler beim Laden der Details.</p>');
+            }
         })
         .catch(error => {
             modalBody.html('<p>Fehler beim Laden der Details.</p>');

@@ -1144,8 +1144,6 @@ class rex_api_stats_load_full extends rex_api_function
     });
 </script>';
 
-        ob_clean();
-        echo $html;
-        exit();
+        return new rex_api_result(true, $html);
     }
 }
