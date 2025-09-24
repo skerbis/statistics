@@ -29,11 +29,16 @@ foreach ($articles as $article) {
     $url = rex_getUrl($article['id'], $article['clang_id']);
     // Remove protocol and domain to match stored URLs
     $parsed = parse_url($url);
-    $path = $parsed['path'] . (isset($parsed['query']) ? '?' . $parsed['query'] : '');
+    $path = isset($parsed['path']) ? $parsed['path'] : '/';
+    if (isset($parsed['query']) && $parsed['query'] != '') {
+        $path .= '?' . $parsed['query'];
+    }
 
-    // Get total visits for this path
-    $stats = $sql->getArray("SELECT SUM(count) as total FROM " . rex::getTable('pagestats_visits_per_url') . " WHERE url LIKE :url AND date BETWEEN :start AND :end", [
-        'url' => '%' . $path . '%',
+    // Get total visits for this path: compare only the path part of stored URLs (strip domain)
+    // Stored URLs have format "domain/path...". We extract the path starting at the first slash
+    // and compare that to the article path to avoid '%' matching everything for '/'.
+    $stats = $sql->getArray("SELECT SUM(count) as total FROM " . rex::getTable('pagestats_visits_per_url') . " WHERE SUBSTRING(url, LOCATE('/', url)) LIKE :path AND date BETWEEN :start AND :end", [
+        'path' => $path . '%',
         'start' => $filter_date_helper->date_start->format('Y-m-d'),
         'end' => $filter_date_helper->date_end->format('Y-m-d')
     ]);
